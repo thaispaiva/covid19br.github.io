@@ -30,7 +30,7 @@ option_list <- list(
     make_option("--dataBase", default = "NULL",
                 help = ("Data da base de dados, formato 'yyyy-mm-dd'"),
                 metavar = "dataBase"),
-    make_option("--formatoData", default = "%Y-%m-%d",
+    make_option("--formatoData", default = "%d/%m/%Y",
                 help = ("Formato do campo de datas no csv, confome padrão da função as.Date"),
                 metavar = "formatoData"),
     make_option("--updateGit", default = "FALSE",
@@ -56,7 +56,7 @@ update.git <- opt$options$updateGit
 ### to run INTERACTIVELY: START HERE
 ################################################################################
 # you have to set the variables below before proceeding
-## nome <- "SRAGH_2020_05_04.csv"
+## nome <- "SRAGHospitalizado_2020_05_04.csv"
 ## data <- "NULL"
 ## estado <- "SP"
 ## window <- 40
@@ -228,7 +228,7 @@ nome.now.df.srag <- paste0("../dados/estado_",estado,"/nowcasting_srag_previstos
 nome.not.srag <- paste0("../dados/estado_",estado,"/notificacoes_srag_",format(data.base,"%Y_%m_%d"),".csv")
 nome.sint.srag <- paste0("../dados/estado_",estado,"/n_casos_data_sintoma_srag_",format(data.base,"%Y_%m_%d"),".csv")
 ##Obitos covid##
-nome.now.ob.covid <- paste0("/dados/estado_",estado,"/nowcasting_obitos_covid_",format(data.base,"%Y_%m_%d"),".rds")
+nome.now.ob.covid <- paste0("../dados/estado_",estado,"/nowcasting_obitos_covid_",format(data.base,"%Y_%m_%d"),".rds")
 nome.now.df.ob.covid <- paste0("../dados/estado_",estado,"/nowcasting_obitos_covid_previstos_",format(data.base,"%Y_%m_%d"),".csv")
 nome.not.ob.covid <- paste0("../dados/estado_",estado,"/notificacoes_obitos_covid_",format(data.base,"%Y_%m_%d"),".csv")
 nome.data.ob.covid <- paste0("../dados/estado_",estado,"/n_casos_data_obitos_covid_",format(data.base,"%Y_%m_%d"),".csv")
@@ -292,15 +292,15 @@ write.csv(n.data.sintoma,
           row.names = FALSE)
 ##SRAG##
 write.csv(n.data.sintoma.srag,
-          file = nome.sint.srag),
+          file = nome.sint.srag,
           row.names = FALSE)
 #OBITOS COVID
 write.csv(n.data.obitos.covid,
-          file = nome.data.ob.covid),
+          file = nome.data.ob.covid,
           row.names = FALSE)
 ##obitos srag##
 write.csv(n.data.obitos.srag,
-          file = nome.data.ob.srag),
+          file = nome.data.ob.srag,
           row.names = FALSE)
 
 ################################################################################
@@ -316,7 +316,7 @@ if (update.git) {#ast isto é segurança para a gente por enquanto, pode sair de
     ##obitos srag##
     system(paste("git add", nome.now.ob.srag, nome.now.df.ob.srag, nome.not.ob.srag, nome.data.ob.srag))
     system(paste0("git commit -m '[auto] atualizacao automática nowcasting estado ", estado, "' &&
-       git push origin master")
+       git push origin master"))
 }
 
 ##%PI: ainda a implementar para cada estado
