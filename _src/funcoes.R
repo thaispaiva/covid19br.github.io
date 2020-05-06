@@ -237,7 +237,7 @@ prepara.dados <- function(tipo = "covid",
     }
     if (tipo %in% obitos) {
         n.notificados <- n.notificados %>% 
-            rename(dt_col = "dt_encerra") #ast isto é uma das coisas que muda mas tem que ser um rename 
+            rename(dt_col = "dt_notific") #ast aqui é notific mesmo PI explicou
         nome.sint <- "n_casos_data_"
     }
     n.notificados.zoo <- with(n.notificados, zoo(n.notific, as.Date(dt_col)))#%ast aqui estou usando a renomeada
@@ -248,12 +248,7 @@ prepara.dados <- function(tipo = "covid",
                                  as.Date(now.pred.original[,"onset_date"]))
     
     ## N de casos por data de sintoma
-    n.sintoma <- read.csv(paste0(nome.dir, nome.sint, tipo, "_", data.base, ".csv"))#este paste tao especifico nao pode porque sintomas é obitos também agora
-    #daí tava tentando um list.files tipo
-    #file.sintoma <- list.files(path = nome.dir, pattern = paste0("n_casos_data.+", tipo), full.names = T)#isto está funcionando para tipo obito_covid que me serve mas nao vai servir para todos
-    #n.sintoma <- read.csv(file.sintoma)
-    #o problema é que tipo obito_xxx contém xxx entao nao faz bem o subset. a opção seria renomear as colunas de n_casos_obitos ou n_casos_sintomas como nas linhas 29 e 34. (ou renomear na hora de salvar? ou no inicio do script?
-    #names(n.sintoma)
+    n.sintoma <- read.csv(paste0(nome.dir, nome.sint, tipo, "_", data.base, ".csv"))
     # adicionando condicao para 
     if (tipo %in% casos)
         n.sintoma.zoo <- with(n.sintoma, zoo(n.casos, as.Date(dt_sin_pri)))
