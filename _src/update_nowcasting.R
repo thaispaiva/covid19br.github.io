@@ -96,7 +96,7 @@ if (existe.nowcasting(adm, sigla.adm)) {
   # códigos de análise e plot genéricos (mas pode usar as variáveis `mun` e
   # `municipio` pra títulos de plot etc.%isso agora adm.sigla too
   source('analises_nowcasting.R')
-  source('plots_municipios.R')
+  source('plots_nowcasting.R')
   
   ## Data de Atualizacao
   print("Atualizando data de atualizacao...")
@@ -129,13 +129,13 @@ if (existe.nowcasting(adm, sigla.adm)) {
   n <- length(plots.para.atualizar)
   
   for (i in 1:n) {
+    fig.name <- paste0(filenames[i],".", tolower(sigla.adm))
     graph.html <- ggplotly(plots.para.atualizar[[i]]) %>%
       layout(margin = list(l = 50, r = 20, b = 20, t = 20, pad = 4))
     graph.svg <- plots.para.atualizar[[i]] +
       theme(axis.text = element_text(size = 11, family = "Arial", face = "plain"),
             # ticks
             axis.title = element_text(size = 14, family = "Arial", face = "plain")) # title
-    fig.name <- paste0(filenames[i],".", tolower(sigla.adm))
     with_dir(web.path, 
              saveWidget(frameableWidget(graph.html), file = paste0(fig.name, ".html"), libdir = "./libs")) # HTML Interative Plot
     ggsave(paste(web.path, fig.name, ".svg", sep = ""), 
