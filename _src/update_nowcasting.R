@@ -20,7 +20,7 @@ makeNamedList <- function(...) {
 existe.nowcasting <- function(adm, 
                               sigla.adm){ 
   nome.dir <- paste0("../dados/", adm, "_", sigla.adm, "/")
-  data.base <- dir(nome.dir, pattern = paste0("nowcasting_", tipo, "_20")) %>% 
+  data.base <- dir(nome.dir, pattern = paste0("nowcasting_covid", "_20")) %>% 
     stringr::str_extract("(19|20)\\d\\d[_ /.](0[1-9]|1[012])[_ /.](0[1-9]|[12][0-9]|3[01])") %>% 
     as.Date(format = "%Y_%m_%d") %>%
     max() %>%
@@ -58,7 +58,7 @@ sigla.adm <- opt$options$sigla
 
 #if you are going to run this interactively uncomment: 
 # adm <- "estado"
-# sigla.adm <- "RJ"
+# sigla.adm <- "AM"
 
 if (!exists('sigla.adm')) {
   print("Sigla do estado não definida")
@@ -89,7 +89,7 @@ if (adm == "municipio")
 # este arquivo deve se encarregar de procurar na pasta certa pelo arquivo com a
 # data mais recente
 #ö: srm tem que testar ver se essa solucao com if funciona
-if (existe.nowcasting) {
+if (existe.nowcasting(adm, sigla.adm)) {
   
   source('prepara_dados_nowcasting.R')
   
