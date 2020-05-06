@@ -306,6 +306,7 @@ write.csv(n.data.obitos.srag,
 ## Comando git: commits e pushs
 ################################################################################
 if (update.git) {#ast isto é segurança para a gente por enquanto, pode sair depois ou ficar como TRUE por default - por enquanto tá FALSE
+    system("git pull")
     ##COVID##
     system(paste("git add", nome.now, nome.now.df, nome.not, nome.sint))
     ##SRAG##
@@ -314,7 +315,7 @@ if (update.git) {#ast isto é segurança para a gente por enquanto, pode sair de
     system(paste("git add", nome.now.ob.covid, nome.now.df.ob.covid, nome.not.ob.covid, nome.data.ob.covid))
     ##obitos srag##
     system(paste("git add", nome.now.ob.srag, nome.now.df.ob.srag, nome.not.ob.srag, nome.data.ob.srag))
-    system(paste0("git commit -m '[auto] atualizacao automática nowcasting estado ", estado, "' &&
+    system(paste0("git commit -m '[auto] atualizacao automatica nowcasting estado ", estado, "' &&
        git push origin master"))
 }
 
