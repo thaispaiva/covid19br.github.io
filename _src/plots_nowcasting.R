@@ -280,7 +280,7 @@ minmax.casos.srag <- data.frame(row.names = sigla.adm)
 min <- as.integer(now.srag.proj.zoo[max(nrow(now.srag.proj.zoo)),2])
 max <- as.integer(now.srag.proj.zoo[max(nrow(now.srag.proj.zoo)),3])
 data <- format(max(time(now.srag.proj.zoo)), "%d/%m/%Y")
-.minmax.casos.srag <- cbind(minmax.casos.srag,
+minmax.casos.srag <- cbind(minmax.casos.srag,
                                       min, max, data)
 write.table(minmax.casos.srag, 
             file = paste0(web.path, "data_forecasr_exp_", adm, "_", tolower(sigla.adm), "_srag.csv"), 
