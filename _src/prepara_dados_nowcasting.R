@@ -33,3 +33,4 @@ lista.ob.covid <- prepara.dados(tipo = "obitos_covid",
 lista.ob.srag <- prepara.dados(tipo = "obitos_srag", 
                                adm = adm, 
                                sigla.adm = sigla.adm)
+

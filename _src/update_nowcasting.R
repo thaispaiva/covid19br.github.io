@@ -6,6 +6,7 @@ library(lubridate)
 library(optparse)
 library(Hmisc)
 library(stringr)
+library(withr)
 
 ##############################################################################
 # Helper Functions ###########################################################
@@ -87,9 +88,10 @@ if (adm == "municipio")
 
 # este arquivo deve se encarregar de procurar na pasta certa pelo arquivo com a
 # data mais recente
-#ö: tem que testar ver se essa solucao funciona
+#ö: srm tem que testar ver se essa solucao com if funciona
 if (existe.nowcasting) {
-  source(paste0('prepara_dados_nowcasting.R'))#
+  
+  source('prepara_dados_nowcasting.R')
   
   # códigos de análise e plot genéricos (mas pode usar as variáveis `mun` e
   # `municipio` pra títulos de plot etc.%isso agora adm.sigla too
@@ -98,7 +100,8 @@ if (existe.nowcasting) {
   
   ## Data de Atualizacao
   print("Atualizando data de atualizacao...")
-  file <- file(paste0("../web/last.update.", adm, "_", sigla.adm, ".txt")) # coloco o nome do municipio?#coloquei para diferenciar do de estados
+  web.path <- paste0("../web/", adm, "_", sigla.adm, "/")  
+  file <- file(paste0(web.path, "last.update.", adm, "_", tolower(sigla.adm), ".txt")) # coloco o nome do municipio?#coloquei para diferenciar do de estados
   writeLines(c(paste(now())), file)
   close(file)
   
@@ -109,19 +112,19 @@ if (existe.nowcasting) {
   
   # Graficos a serem atualizados
   plots.para.atualizar <- makeNamedList(
-    plot.nowcast,
+    plot.nowcast.covid, 
     plot.nowcast.srag,                 
-    plot.nowcast.cum,
+    plot.nowcast.cum.covid,
     plot.nowcast.cum.srag,
-    plot.nowcast.ob.covid,
+    #plot.nowcast.ob.covid, #aqui tem erro em plot_municipios.R omitindo por enquanto
     plot.nowcast.ob.srag,
-    plot.tempo.dupl.municipio, 
-    plot.tempo.dupl.municipio.ob.covid,
-    plot.tempo.dupl.municipio.ob.srag,
-    plot.tempo.dupl.municipio.srag,
-    plot.estimate.R0.municipio,
-    plot.estimate.R0.municipio.srag
-  ) # plots obitos
+    plot.tempo.dupl.covid, 
+    plot.tempo.dupl.ob.covid,
+    plot.tempo.dupl.ob.srag,
+    plot.tempo.dupl.srag,
+    plot.estimate.R0.covid,
+    plot.estimate.R0.srag
+  ) 
   filenames <- names(plots.para.atualizar)
   n <- length(plots.para.atualizar)
   
@@ -132,9 +135,11 @@ if (existe.nowcasting) {
       theme(axis.text = element_text(size = 11, family = "Arial", face = "plain"),
             # ticks
             axis.title = element_text(size = 14, family = "Arial", face = "plain")) # title
-    filepath <- paste0("../web/",filenames[i],".", tolower(sigla.adm))
-    saveWidget(frameableWidget(graph.html), file = paste(filepath,".html",sep = ""), libdir = "./libs") # HTML Interative Plot
-    ggsave(paste(filepath, ".svg", sep = ""), plot = graph.svg, device = svg, scale = .8, width = 210, height = 142, units = "mm")
+    fig.name <- paste0(filenames[i],".", tolower(sigla.adm))
+    with_dir(web.path, 
+             saveWidget(frameableWidget(graph.html), file = paste0(fig.name, ".html"), libdir = "./libs")) # HTML Interative Plot
+    ggsave(paste(web.path, fig.name, ".svg", sep = ""), 
+           plot = graph.svg, device = svg, scale = .8, width = 210, height = 142, units = "mm")
   }
   
 } else {
