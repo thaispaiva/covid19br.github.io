@@ -84,7 +84,6 @@ dados[,dt.cols] <- lapply(dados[,dt.cols], function(x) as.Date(x, formato.data))
 ## comandos git: PULL ANTES de adicionar arquivos
 ################################################################################
 system("git pull")
-system("cd para_o_site/; git pull")
 
 ################################################################################
 ## Nowcastings
