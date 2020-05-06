@@ -9,7 +9,6 @@ source("funcoes.R")
 ################################################################################
 ## Dados e nowcastings COVID
 ################################################################################
-
 lista.covid <- prepara.dados(tipo = "covid", 
                              adm = adm, 
                              sigla.adm = sigla.adm)
@@ -17,7 +16,6 @@ lista.covid <- prepara.dados(tipo = "covid",
 ################################################################################
 ## Dados e nowcastings SRAG
 ################################################################################
-
 lista.srag <- prepara.dados(tipo = "srag",
                             adm = adm, 
                             sigla.adm = sigla.adm)
@@ -25,7 +23,6 @@ lista.srag <- prepara.dados(tipo = "srag",
 ################################################################################
 ## Dados e nowcastings COVID OBITOS
 ################################################################################
-
 lista.ob.covid <- prepara.dados(tipo = "obitos_covid", 
                                 adm = adm, 
                                 sigla.adm = sigla.adm)
@@ -33,7 +30,6 @@ lista.ob.covid <- prepara.dados(tipo = "obitos_covid",
 ################################################################################
 ## Dados e nowcastings SRAG OBITOS
 ################################################################################
-
 lista.ob.srag <- prepara.dados(tipo = "obitos_srag", 
                                adm = adm, 
                                sigla.adm = sigla.adm)

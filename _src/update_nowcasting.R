@@ -5,11 +5,29 @@ library(plotly)
 library(lubridate)
 library(optparse)
 library(Hmisc)
+library(stringr)
 
-# Helper Function
+##############################################################################
+# Helper Functions ###########################################################
+##############################################################################
+## lista de nomes
 makeNamedList <- function(...) {
   structure(list(...), names = as.list(substitute(list(...)))[-1L])
 }
+
+## Função para checar se existem dados de nowcasting para a unidade administrativa
+existe.nowcasting <- function(adm, 
+                              sigla.adm){ 
+  nome.dir <- paste0("../dados/", adm, "_", sigla.adm, "/")
+  data.base <- dir(nome.dir, pattern = paste0("nowcasting_", tipo, "_20")) %>% 
+    stringr::str_extract("(19|20)\\d\\d[_ /.](0[1-9]|1[012])[_ /.](0[1-9]|[12][0-9]|3[01])") %>% 
+    as.Date(format = "%Y_%m_%d") %>%
+    max() %>%
+    format("%Y_%m_%d")
+  nowcasting.file <- list.files(path = nome.dir, pattern = "nowcasting_covid*.*rds")
+  length(nowcasting.file) > 0
+}
+##############################################################################
 
 # if executed from command line, look for arguments
 # else variable `mun` is assumed to be defined
@@ -69,52 +87,56 @@ if (adm == "municipio")
 
 # este arquivo deve se encarregar de procurar na pasta certa pelo arquivo com a
 # data mais recente
-#ö: perdi muito tempo botando dentro a checagem se tem nowcasting ou não mas isso tem que ser aqui :( t
-source(paste0('prepara_dados_nowcasting.R'))#
-
-# códigos de análise e plot genéricos (mas pode usar as variáveis `mun` e
-# `municipio` pra títulos de plot etc.%isso agora adm.sigla too
-source('analises_nowcasting.R')
-source('plots_municipios.R')
-
-## Data de Atualizacao
-print("Atualizando data de atualizacao...")
-file <- file(paste0("../web/last.update.", adm, "_", sigla.adm, ".txt")) # coloco o nome do municipio?#coloquei para diferenciar do de estados
-writeLines(c(paste(now())), file)
-close(file)
-
-################################################################# ###############
-## Atualiza gráficos por estado
-################################################################################
-print("Atualizando plots...")
- 
-# Graficos a serem atualizados
-plots.para.atualizar <- makeNamedList(
-  plot.nowcast,
-  plot.nowcast.srag,                 
-  plot.nowcast.cum,
-  plot.nowcast.cum.srag,
-  plot.nowcast.ob.covid,
-  plot.nowcast.ob.srag,
-  plot.tempo.dupl.municipio, 
-  plot.tempo.dupl.municipio.ob.covid,
-  plot.tempo.dupl.municipio.ob.srag,
-  plot.tempo.dupl.municipio.srag,
-  plot.estimate.R0.municipio,
-  plot.estimate.R0.municipio.srag
+#ö: tem que testar ver se essa solucao funciona
+if (existe.nowcasting) {
+  source(paste0('prepara_dados_nowcasting.R'))#
+  
+  # códigos de análise e plot genéricos (mas pode usar as variáveis `mun` e
+  # `municipio` pra títulos de plot etc.%isso agora adm.sigla too
+  source('analises_nowcasting.R')
+  source('plots_municipios.R')
+  
+  ## Data de Atualizacao
+  print("Atualizando data de atualizacao...")
+  file <- file(paste0("../web/last.update.", adm, "_", sigla.adm, ".txt")) # coloco o nome do municipio?#coloquei para diferenciar do de estados
+  writeLines(c(paste(now())), file)
+  close(file)
+  
+  ################################################################# ###############
+  ## Atualiza gráficos por estado
+  ################################################################################
+  print("Atualizando plots...")
+  
+  # Graficos a serem atualizados
+  plots.para.atualizar <- makeNamedList(
+    plot.nowcast,
+    plot.nowcast.srag,                 
+    plot.nowcast.cum,
+    plot.nowcast.cum.srag,
+    plot.nowcast.ob.covid,
+    plot.nowcast.ob.srag,
+    plot.tempo.dupl.municipio, 
+    plot.tempo.dupl.municipio.ob.covid,
+    plot.tempo.dupl.municipio.ob.srag,
+    plot.tempo.dupl.municipio.srag,
+    plot.estimate.R0.municipio,
+    plot.estimate.R0.municipio.srag
   ) # plots obitos
-filenames <- names(plots.para.atualizar)
-n <- length(plots.para.atualizar)
-
-for (i in 1:n) {
-  graph.html <- ggplotly(plots.para.atualizar[[i]]) %>%
-    layout(margin = list(l = 50, r = 20, b = 20, t = 20, pad = 4))
-  graph.svg <- plots.para.atualizar[[i]] +
-    theme(axis.text = element_text(size = 11, family = "Arial", face = "plain"),
-          # ticks
-          axis.title = element_text(size = 14, family = "Arial", face = "plain")) # title
-  filepath <- paste0("../web/",filenames[i],".", tolower(sigla.adm))
-  saveWidget(frameableWidget(graph.html), file = paste(filepath,".html",sep = ""), libdir = "./libs") # HTML Interative Plot
-  ggsave(paste(filepath, ".svg", sep = ""), plot = graph.svg, device = svg, scale = .8, width = 210, height = 142, units = "mm")
+  filenames <- names(plots.para.atualizar)
+  n <- length(plots.para.atualizar)
+  
+  for (i in 1:n) {
+    graph.html <- ggplotly(plots.para.atualizar[[i]]) %>%
+      layout(margin = list(l = 50, r = 20, b = 20, t = 20, pad = 4))
+    graph.svg <- plots.para.atualizar[[i]] +
+      theme(axis.text = element_text(size = 11, family = "Arial", face = "plain"),
+            # ticks
+            axis.title = element_text(size = 14, family = "Arial", face = "plain")) # title
+    filepath <- paste0("../web/",filenames[i],".", tolower(sigla.adm))
+    saveWidget(frameableWidget(graph.html), file = paste(filepath,".html",sep = ""), libdir = "./libs") # HTML Interative Plot
+    ggsave(paste(filepath, ".svg", sep = ""), plot = graph.svg, device = svg, scale = .8, width = 210, height = 142, units = "mm")
+  }
+  
+} else {
+  print(paste("Não há nowcasting para", adm, sigla.adm))
 }
-
