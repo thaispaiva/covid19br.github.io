@@ -258,7 +258,7 @@ prepara.dados <- function(tipo = "covid",
     ## Junta todos os casos por data de sintoma com previsao do nowcasting (que só tem os ultimos 40 dias)
     ## VERIFICAR: Total de casos reportado por data do nowcasting tem diferenças com total de casos por data de sintoma tabulado
     now.pred.zoo <- merge(n.casos = n.sintoma.zoo, now.pred.zoo.original)
-    ## Retira os dias ara os quais há n de casos observados mas nao nowcasting
+    ## Retira os dias para os quais há n de casos observados mas nao nowcasting
     now.pred.zoo <- window(now.pred.zoo, start = min(time(n.sintoma.zoo)), end = max(time(now.pred.zoo.original)))
     ## Adiciona variavel de novos casos merged:
     ## junta os valores corrigidos por nowcasting (que em geral vai até um certo ponto no passado)
