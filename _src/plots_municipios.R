@@ -20,7 +20,7 @@ plot.formatos <- theme_bw() +
 ## Com linha de média móvel
 ################################################################################
 ## COVID
-plot.nowcast <-
+plot.nowcast.covid <-
     now.pred.zoo %>%
     ggplot(aes(Index)) +
     geom_line(aes(y = estimate.merged), lty = 2, col = "grey") +
@@ -119,7 +119,7 @@ plot.nowcast.ob.srag <-
 ## com as projecoes para os próximos 5 dias
 ################################################################################
 ## COVID ##
-plot.nowcast.cum <-
+plot.nowcast.cum.covid <-
     now.proj.zoo %>%
     ggplot(aes(Index)) +
     geom_line(data = window(now.proj.zoo, end = max(time(now.pred.zoo))),
@@ -170,9 +170,10 @@ plot.nowcast.cum.srag <-
     scale_y_log10() 
 
 ################################################################################
-## Plot do tempo de duplicação em função do tempo #srm: criei um fracasito aqui
+## Plot do tempo de duplicação em função do tempo 
 ################################################################################
-plot.tempo.dupl.municipio <-
+#ö: lidar com barras de erro negativas
+plot.tempo.dupl.covid <-
     td.now %>%
     ggplot(aes(Index, estimativa)) +
     geom_ribbon(aes(ymin = ic.inf, ymax = ic.sup), fill = "lightgrey") +
@@ -182,95 +183,108 @@ plot.tempo.dupl.municipio <-
     ylab("Tempo de duplicação (dias)") +
     plot.formatos 
 
-plot.tempo.dupl.municipio.srag  <- plot.tempo.dupl.municipio %+% 
+plot.tempo.dupl.srag  <- plot.tempo.dupl.covid %+% 
     fortify(window(td.now.srag, start = min(time(td.now)))) 
 
 ##### OBITOS ####
 ## COVID
-plot.tempo.dupl.municipio.ob.covid  <- plot.tempo.dupl.municipio %+% 
+plot.tempo.dupl.ob.covid  <- plot.tempo.dupl.covid %+% 
     fortify(window(td.now.ob.covid, start = min(time(td.now)))) 
 
 ## SRAG
-plot.tempo.dupl.municipio.ob.srag  <- plot.tempo.dupl.municipio %+% 
+plot.tempo.dupl.ob.srag  <- plot.tempo.dupl.covid %+% 
     fortify(window(td.now.ob.srag, start = min(time(td.now)))) 
 
 ################################################################################
 ## Plot do R efetivo em função do tempo
 ################################################################################
 ## COVID
-plot.estimate.R0.municipio <-
+plot.estimate.R0.covid <-
     ggplot(data = Re.now.zoo, aes(Index, Mean.R)) +
     geom_ribbon(aes(ymin = Quantile.0.025.R, ymax = Quantile.0.975.R), fill = "lightgrey") +
     geom_line(size = 1.25, colour = RColorBrewer::brewer.pal(4, "Dark2")[3]) +
-    scale_x_date( date_labels = "%d/%b", name="") +
+    scale_x_date( date_labels = "%d/%b", name = "") +
     ylim(min(c(0.8, min(Re.now.zoo$Quantile.0.025.R))), max(Re.now.zoo$Quantile.0.975.R))+
     geom_hline(yintercept=1, linetype = "dashed", col = "red", size = 1) +          
     ylab("Número de reprodução da epidemia") +
     plot.formatos
 
 ## SRAG #
-plot.estimate.R0.municipio.srag <- plot.estimate.R0.municipio %+% fortify(window(Re.now.srag.zoo, start=min(time(Re.now.zoo))))
+plot.estimate.R0.srag <- plot.estimate.R0.covid %+% 
+    fortify(window(Re.now.srag.zoo, start = min(time(Re.now.zoo))))
 
 ######################################################################
 ## Tabelas para preencher o html
 ######################################################################
 ## COVID ##
 
+# separando os outputs em subpastas yay!
+web.path <- paste0("../web/", adm, "_", sigla.adm, "/") 
+
+if (!dir.exists(web.path)) dir.create(web.path)
+
 ## Tabela que preenche o minimo e o maximo do nowcast
-municipios.minmax.casos <- data.frame(row.names = sigla.adm)
+minmax.casos <- data.frame(row.names = sigla.adm)
 min <- as.integer(now.proj.zoo[max(nrow(now.proj.zoo)),2])
 max <- as.integer(now.proj.zoo[max(nrow(now.proj.zoo)),3])
 data <- format(max(time(now.proj.zoo)), "%d/%m/%Y")
-municipios.minmax.casos <- cbind(municipios.minmax.casos, min, max, data)
-write.table(municipios.minmax.casos, 
-            file = paste0("../web/data_forecasr_exp_", adm, "_", sigla.adm, ".csv"), row.names = TRUE, col.names = FALSE)
+minmax.casos <- cbind(minmax.casos, min, max, data)
+write.table(minmax.casos, 
+            file = paste0(web.path, "data_forecasr_exp_", adm, "_", tolower(sigla.adm), "_covid.csv"), 
+            row.names = TRUE, col.names = FALSE)
 # Não é generico, é apenas para o municipio de sp. Tendo mais, tem que atualizar
 
 ## Tabela do tempo de duplicação
-municipios.temp.dupl <- data.frame(row.names = sigla.adm)
-min.dias <- as.vector(round(td.now[max(nrow(td.now)),2], 1))
-max.dias <- as.vector(round(td.now[max(nrow(td.now)),3], 1))
-municipios.temp.dupl <- cbind(municipios.temp.dupl, min.dias, max.dias)
-write.table(municipios.temp.dupl, file = paste0("../web/data_tempo_dupli_", adm, "_", sigla.adm, ".csv"), row.names = TRUE, col.names = FALSE)
+temp.dupl <- data.frame(row.names = sigla.adm)
+min.dias <- as.vector(round(td.now[max(nrow(td.now)), 2], 1))
+max.dias <- as.vector(round(td.now[max(nrow(td.now)), 3], 1))
+temp.dupl <- cbind(temp.dupl, min.dias, max.dias)
+write.table(temp.dupl, 
+            file = paste0(web.path, "data_tempo_dupli_", adm, "_", tolower(sigla.adm), "_covid.csv"), 
+            row.names = TRUE, col.names = FALSE)
 
 
 ## Tabela do Re
-municipios.Re <- data.frame(row.names = sigla.adm)
-min <- as.factor(round(Re.now.zoo[nrow(Re.now.zoo), 5],1))
-max <- as.factor(round(Re.now.zoo[nrow(Re.now.zoo), 11],1))
-municipios.Re <- cbind(municipios.Re, min, max)
-write.table(municipios.Re, 
-            file = paste0("../web/data_Re_", adm, "_", sigla.adm, ".csv"), row.names = TRUE, col.names = FALSE)
+Re.covid <- data.frame(row.names = sigla.adm)
+min <- as.factor(round(Re.now.zoo[nrow(Re.now.zoo), 5], 1))
+max <- as.factor(round(Re.now.zoo[nrow(Re.now.zoo), 11], 1))
+Re.covid <- cbind(Re.covid, min, max)
+write.table(Re.covid, 
+            file = paste0(web.path, "data_Re_", adm, "_", tolower(sigla.adm), "_covid.csv"), 
+            row.names = TRUE, col.names = FALSE)
 
 
 ## SRAG ##
 
 ## Tabela que preenche o minimo e o maximo do nowcast
-municipios.minmax.casos.srag <- data.frame(row.names = sigla.adm)
+minmax.casos.srag <- data.frame(row.names = sigla.adm)
 min <- as.integer(now.srag.proj.zoo[max(nrow(now.srag.proj.zoo)),2])
 max <- as.integer(now.srag.proj.zoo[max(nrow(now.srag.proj.zoo)),3])
 data <- format(max(time(now.srag.proj.zoo)), "%d/%m/%Y")
-municipios.minmax.casos.srag <- cbind(municipios.minmax.casos.srag,
+.minmax.casos.srag <- cbind(minmax.casos.srag,
                                       min, max, data)
-write.table(municipios.minmax.casos.srag, 
-            file = paste0("../web/data_forecasr_exp_", adm, "_", sigla.adm, "_srag.csv"), row.names = TRUE, col.names = FALSE)
+write.table(minmax.casos.srag, 
+            file = paste0(web.path, "data_forecasr_exp_", adm, "_", tolower(sigla.adm), "_srag.csv"), 
+            row.names = TRUE, col.names = FALSE)
 # Não é generico, é apenas para o municipio de sp. Tendo mais, tem que atualizar
 
 ## Tabela do tempo de duplicação
-municipios.temp.dupl.srag <- data.frame(row.names = sigla.adm)
+temp.dupl.srag <- data.frame(row.names = sigla.adm)
 min.dias <- as.vector(round(td.now.srag[max(nrow(td.now.srag)),2], 1))
 max.dias <- as.vector(round(td.now.srag[max(nrow(td.now.srag)),3], 1))
-municipios.temp.dupl.srag <- cbind(municipios.temp.dupl.srag, min.dias, max.dias)
-write.table(municipios.temp.dupl.srag, 
-            file = paste0("../web/data_tempo_dupli_", adm, "_", sigla.adm, "_srag.csv"), row.names = TRUE, col.names = FALSE)
+temp.dupl.srag <- cbind(temp.dupl.srag, min.dias, max.dias)
+write.table(temp.dupl.srag, 
+            file = paste0(web.path, "data_tempo_dupli_", adm, "_", tolower(sigla.adm), "_srag.csv"), 
+            row.names = TRUE, col.names = FALSE)
 
 
 ## Tabela do Re
-municipios.Re.srag <- data.frame(row.names = sigla.adm)
+Re.srag <- data.frame(row.names = sigla.adm)
 min <- as.factor(round(Re.now.srag.zoo[nrow(Re.now.srag.zoo), 5],1))
 max <- as.factor(round(Re.now.srag.zoo[nrow(Re.now.srag.zoo), 11],1))
-municipios.Re.srag <- cbind(municipios.Re.srag, min, max)
-write.table(municipios.Re.srag, 
-            file = paste0("../web/data_Re_", adm, "_", sigla.adm, "_srag.csv"), row.names = TRUE, col.names = FALSE)
+Re.srag <- cbind(Re.srag, min, max)
+write.table(Re.srag, 
+            file = paste0(web.path, "data_Re_", adm, "_", tolower(sigla.adm), "_srag.csv"), 
+            row.names = TRUE, col.names = FALSE)
 
 
