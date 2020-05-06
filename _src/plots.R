@@ -44,7 +44,7 @@ plot.forecast.exp.br <-
     scale_y_log10() +
     ##ylim(0,max(ncasos.completa$ic.upp, na.rm=TRUE)) +
     ylab("Número de casos") +
-    ggtitle("Número de casos notificados em escala logarítimica") +
+    ggtitle("Número de casos notificados em escala logarítmica") +
     plot.formatos
 
 ################################################################################
