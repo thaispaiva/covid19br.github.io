@@ -116,11 +116,11 @@ if (existe.nowcasting(adm, sigla.adm)) {
     plot.nowcast.srag,                 
     plot.nowcast.cum.covid,
     plot.nowcast.cum.srag,
-    #plot.nowcast.ob.covid, #aqui tem erro em plot_municipios.R omitindo por enquanto
-    plot.nowcast.ob.srag,
+    #plot.nowcast.ob.covid, 
+    #plot.nowcast.ob.srag,
     plot.tempo.dupl.covid, 
-    plot.tempo.dupl.ob.covid,
-    plot.tempo.dupl.ob.srag,
+    #plot.tempo.dupl.ob.covid,
+    #plot.tempo.dupl.ob.srag,
     plot.tempo.dupl.srag,
     plot.estimate.R0.covid,
     plot.estimate.R0.srag
