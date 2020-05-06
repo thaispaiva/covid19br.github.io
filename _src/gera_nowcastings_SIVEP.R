@@ -58,7 +58,7 @@ update.git <- opt$options$updateGit
 # you have to set the variables below before proceeding
 ## nome <- "SRAGHospitalizado_2020_05_04.csv"
 ## data <- "NULL"
-## estado <- "SP"
+## estado <- "DF"
 ## window <- 40
 ## trim.now <- 2
 ## formato.data <- "%d/%m/%Y"
