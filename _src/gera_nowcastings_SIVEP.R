@@ -73,7 +73,7 @@ if (data == "NULL")
 if (data != "NULL")
     data.base <- as.Date(data)
 ## Importa csv. Ad hoc intencional para quebrar se mudar estrutura de diretorios
-dados <- read.csv2(paste0("../SIVEP-Gripe/", nome), as.is=TRUE)
+dados <- read.csv2(paste0("../dados/SIVEP-Gripe/", nome), as.is=TRUE)
 ## Conveninencia, nomes das variaveis em minusculas
 names(dados) <- tolower(names(dados))
 ## Coversao dos campos de datas em datas
