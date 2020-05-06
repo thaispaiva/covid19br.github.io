@@ -216,6 +216,7 @@ n.data.obitos.srag  <-
 ## Grava os objetos
 ################################################################################
 ## nomes dos objetos e seus paths
+dir.create(paste0("../dados/estado_", estado), showWarnings = FALSE)
 ##COVID##
 nome.now <- paste0("../dados/estado_",estado,"/nowcasting_covid_",format(data.base,"%Y_%m_%d"),".rds")
 nome.now.df <- paste0("../dados/estado_",estado,"/nowcasting_covid_previstos_",format(data.base,"%Y_%m_%d"),".csv")
