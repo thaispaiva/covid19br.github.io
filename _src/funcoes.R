@@ -214,7 +214,7 @@ prepara.dados <- function(tipo = "covid",
     casos <- c("covid", "srag")
     obitos <- c("obitos_covid", "obitos_srag")
     if (adm == "municipio") {
-        if (!sigla.adm %in% c("SP")) {
+        if (!sigla.adm %in% c("SP", "RJ")) {
             stop("sigla de municipio invalida")
         }
     }
@@ -345,8 +345,9 @@ now.proj <- function(pred,
                                          now.lista,
                                          from = ndias.now - days.to.forecast + 1))
     ##Calcula n de casos cumulativos
-    now.proj.zoo$not.mean.c <- cumsum(now.proj.zoo$not.mean)
-    now.proj.zoo$not.low.c <- cumsum(now.proj.zoo$not.low)
-    now.proj.zoo$not.upp.c <- cumsum(now.proj.zoo$not.upp)
+    
+    now.proj.zoo$not.mean.c <- cumsum(na.zero(now.proj.zoo$not.mean))
+    now.proj.zoo$not.low.c <- cumsum(na.zero(now.proj.zoo$not.low))
+    now.proj.zoo$not.upp.c <- cumsum(na.zero(now.proj.zoo$not.upp))
     return(now.proj.zoo)
 }
