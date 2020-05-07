@@ -32,7 +32,7 @@ prepara.dados.muni <- function(tipo = "covid") { # tipos possiveis: covid, srag,
     }
     if (tipo %in% obitos) {
       n.notificados <- n.notificados %>% 
-        rename(dt_col = "dt_encerra") #ast isto é uma das coisas que muda mas tem que ser um rename 
+        rename(dt_col = "dt_notific") 
       nome.sint <- "n_casos_data_"
     }
     n.notificados.zoo <- with(n.notificados, zoo(n.notific, as.Date(dt_col)))#%ast aqui estou usando a renomeada
