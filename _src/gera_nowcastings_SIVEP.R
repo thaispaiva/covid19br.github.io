@@ -218,39 +218,43 @@ n.data.obitos.srag  <-
 ## nomes dos objetos e seus paths
 dir.create(paste0("../dados/estado_", estado), showWarnings = FALSE)
 ##COVID##
-nome.now <- paste0("../dados/estado_",estado,"/nowcasting_covid_",format(data.base,"%Y_%m_%d"),".rds")
+##nome.now <- paste0("../dados/estado_",estado,"/nowcasting_covid_",format(data.base,"%Y_%m_%d"),".rds")
 nome.now.df <- paste0("../dados/estado_",estado,"/nowcasting_covid_previstos_",format(data.base,"%Y_%m_%d"),".csv")
+nome.now.post <- paste0("../dados/estado_",estado,"/nowcasting_covid_post_",format(data.base,"%Y_%m_%d"),".csv")
 nome.not <- paste0("../dados/estado_",estado,"/notificacoes_covid_",format(data.base,"%Y_%m_%d"),".csv")
 nome.sint <- paste0("../dados/estado_",estado,"/n_casos_data_sintoma_covid_",format(data.base,"%Y_%m_%d"),".csv")
 ##SRAG##
-nome.now.srag <- paste0("../dados/estado_",estado,"/nowcasting_srag_",format(data.base,"%Y_%m_%d"),".rds")
+##nome.now.srag <- paste0("../dados/estado_",estado,"/nowcasting_srag_",format(data.base,"%Y_%m_%d"),".rds")
 nome.now.df.srag <- paste0("../dados/estado_",estado,"/nowcasting_srag_previstos_",format(data.base,"%Y_%m_%d"),".csv")
+nome.now.post.srag <- paste0("../dados/estado_",estado,"/nowcasting_srag_post_",format(data.base,"%Y_%m_%d"),".csv")
 nome.not.srag <- paste0("../dados/estado_",estado,"/notificacoes_srag_",format(data.base,"%Y_%m_%d"),".csv")
 nome.sint.srag <- paste0("../dados/estado_",estado,"/n_casos_data_sintoma_srag_",format(data.base,"%Y_%m_%d"),".csv")
 ##Obitos covid##
-nome.now.ob.covid <- paste0("../dados/estado_",estado,"/nowcasting_obitos_covid_",format(data.base,"%Y_%m_%d"),".rds")
+##nome.now.ob.covid <- paste0("../dados/estado_",estado,"/nowcasting_obitos_covid_",format(data.base,"%Y_%m_%d"),".rds")
 nome.now.df.ob.covid <- paste0("../dados/estado_",estado,"/nowcasting_obitos_covid_previstos_",format(data.base,"%Y_%m_%d"),".csv")
+nome.now.post.ob.covid <- paste0("../dados/estado_",estado,"/nowcasting_obitos_covid_post_",format(data.base,"%Y_%m_%d"),".csv")
 nome.not.ob.covid <- paste0("../dados/estado_",estado,"/notificacoes_obitos_covid_",format(data.base,"%Y_%m_%d"),".csv")
 nome.data.ob.covid <- paste0("../dados/estado_",estado,"/n_casos_data_obitos_covid_",format(data.base,"%Y_%m_%d"),".csv")
 ##SRAG##
-nome.now.ob.srag <- paste0("../dados/estado_",estado,"/nowcasting_obitos_srag_",format(data.base,"%Y_%m_%d"),".rds")
+##nome.now.ob.srag <- paste0("../dados/estado_",estado,"/nowcasting_obitos_srag_",format(data.base,"%Y_%m_%d"),".rds")
 nome.now.df.ob.srag <- paste0("../dados/estado_",estado,"/nowcasting_obitos_srag_previstos_",format(data.base,"%Y_%m_%d"),".csv")
+nome.now.post.ob.srag <- paste0("../dados/estado_",estado,"/nowcasting_obitos_srag_post_",format(data.base,"%Y_%m_%d"),".csv")
 nome.not.ob.srag <- paste0("../dados/estado_",estado,"/notificacoes_obitos_srag_",format(data.base,"%Y_%m_%d"),".csv")
 nome.data.ob.srag <- paste0("../dados/estado_",estado,"/n_casos_data_obitos_srag_",format(data.base,"%Y_%m_%d"),".csv")
 
 ## Grava os objetos
 ## Output do nowcasting. Uma lista, por isso é salvo em RDS
 ##COVID##
-saveRDS(now.covid, file = nome.now)
+## saveRDS(now.covid, file = nome.now)
 ##SRAG##
-saveRDS(now.srag, file = nome.now.srag)
+## saveRDS(now.srag, file = nome.now.srag)
 ##obitos_COVID##
-saveRDS(now.obitos.covid, file = nome.now.ob.covid)
+## saveRDS(now.obitos.covid, file = nome.now.ob.covid)
 ##obitos_SRAG##
-saveRDS(now.obitos.srag, file = nome.now.ob.srag)
+## saveRDS(now.obitos.srag, file = nome.now.ob.srag)
 
 ## Previstos pelo nowcasting: faz parte da lista que que a função de nowcasting retorna,
-## Mas facilita ter só esta parte como um csv
+## mas como a lista esta ocupando muito disco agora separamos apenas o que é necessário para so calculos
 ##COVID##
 write.csv(now.covid$estimates,
           file = nome.now.df,
@@ -268,6 +272,23 @@ write.csv(now.obitos.srag$estimates,
           file = nome.now.df.ob.srag,
           row.names = FALSE)
 
+## Distribuições posteriores dos parametros do nowcasting. Também faz parte da lista retornada pelo nowcasting
+##COVID##
+write.csv(now.covid$params.post,
+          file = nome.now.post,
+          row.names = FALSE)
+##SRAG##
+write.csv(now.srag$params.post,
+          file = nome.now.post.srag,
+          row.names = FALSE)
+##obitos##
+write.csv(now.obitos.covid$params.post,
+          file = nome.now.post.ob.covid,
+          row.names = FALSE)
+##obitos srag##
+write.csv(now.obitos.srag$params.post,
+          file = nome.now.post.ob.srag,
+          row.names = FALSE)
 ## N de casos por data de notificações
 ##COVID##
 write.csv(n.notificacoes,

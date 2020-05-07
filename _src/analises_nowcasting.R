@@ -4,22 +4,22 @@ source("funcoes.R")
 # COVID #### 
 now.proj.zoo <- now.proj(pred = lista.covid$now.pred.zoo, 
                          pred.original = lista.covid$now.pred.original, 
-                         now.lista = lista.covid$now.lista)
+                         now.params.post = lista.covid$now.params.post)
 
 # SRAG ####
 now.srag.proj.zoo <-  now.proj(pred = lista.srag$now.pred.zoo, 
                                pred.original = lista.srag$now.pred.original, 
-                               now.lista = lista.srag$now.lista)
+                               now.lista = lista.srag$now.params.post)
 
 # OBITOS COVID ####
 now.ob.covid.proj.zoo <-  now.proj(pred = lista.ob.covid$now.pred.zoo, 
                                    pred.original = lista.ob.covid$now.pred.original, 
-                                   now.lista = lista.ob.covid$now.lista)
+                                   now.lista = lista.ob.covid$now.params.post)
 
 # OBITOS SRAG ####
 now.ob.srag.proj.zoo <-  now.proj(pred = lista.ob.srag$now.pred.zoo, 
                                   pred.original = lista.ob.srag$now.pred.original, 
-                                  now.lista = lista.ob.srag$now.lista)
+                                  now.lista = lista.ob.srag$now.params.post)
 
 ################################################################################
 ## Cálculo do R efetivo ##
