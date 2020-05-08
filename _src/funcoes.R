@@ -21,3 +21,6 @@ source("fct/Re.com.data.R")
 # formatacao e funcoes de plot
 source("fct/plot.formatos.R")
 source("fct/plot.nowcast.diario.R")
+source("fct/plot.nowcast.acumulado.R")
+source("fct/plot.estimate.R0.R")
+source("fct/plot.tempo.dupl.R")
