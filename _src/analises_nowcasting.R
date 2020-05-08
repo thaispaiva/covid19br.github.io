@@ -1,5 +1,15 @@
 source("funcoes.R")
 
+# Helper function
+end.time <- function(pred.zoo, pred.zoo.original){
+  if (min(time(pred.zoo.original)) < min(time(pred.zoo))) {
+    end.time <- min(time(pred.zoo))
+  } else {
+    end.time <- min(time(pred.zoo.original))
+  }
+  return(end.time)
+}
+
 ###############
 # 1. COVID ####
 ###############
@@ -26,10 +36,12 @@ if (existe.covid) {
   
   ## 1.4. Corta a partir do dia com >= 10 casos ####
   dia.zero <- time(lista.covid$now.pred.zoo)[min(which(lista.covid$now.pred.zoo$n.casos >= 10, arr.ind = TRUE))]
-  now.pred.zoo <- window(lista.covid$now.pred.zoo, start = dia.zero)
-  now.proj.zoo <- window(now.proj.zoo, start = dia.zero)
-  
+  if (!is.na(dia.zero)) {
+    now.pred.zoo <- window(lista.covid$now.pred.zoo, start = dia.zero)
+    now.proj.zoo <- window(now.proj.zoo, start = dia.zero)
+  }
   ## 1.5 Gera df para grafico
+  end.time.covid <- end.time(now.pred.zoo, lista.covid$now.pred.zoo.original)
 }
 
 ###############
@@ -56,9 +68,15 @@ if (existe.srag) {
   names(td.now.srag) <- c("estimativa", "ic.inf", "ic.sup")
   
   ## 2.4. Corta a partir do dia com >= 10 casos ####
+  # corta so se da :P
   dia.zero.srag <- time(lista.srag$now.pred.zoo)[min(which(lista.srag$now.pred.zoo$n.casos >= 10, arr.ind = TRUE))]
-  now.srag.pred.zoo <- window(lista.srag$now.pred.zoo, start = dia.zero.srag)
-  now.srag.proj.zoo <- window(now.srag.proj.zoo, start = dia.zero.srag)
+  if (!is.na(dia.zero.srag)) {
+    now.srag.pred.zoo <- window(lista.srag$now.pred.zoo, start = dia.zero.srag)
+    now.srag.proj.zoo <- window(now.srag.proj.zoo, start = dia.zero.srag)
+  }
+  ## 3.4. Cria df para plot
+  end.time.srag <- end.time(now.srag.pred.zoo, lista.srag$now.pred.zoo.original)
+  a <- window(now.srag.pred.zoo, end = end.time.srag)
 }
 
 ######################
@@ -79,8 +97,10 @@ if (existe.ob.covid) {
   
   ## 3.3. Corta a partir do dia com >= 10 casos ####
   dia.zero.ob.covid <- time(lista.ob.covid$now.pred.zoo)[min(which(lista.ob.covid$now.pred.zoo$n.casos >= 10, arr.ind = TRUE))]
-  now.ob.covid.pred.zoo <- window(lista.ob.covid$now.pred.zoo, start = dia.zero.ob.covid)
-  now.ob.covid.proj.zoo  <- window(now.ob.covid.proj.zoo, start = dia.zero.ob.covid)
+  if (!is.na(dia.zero.ob.covid)) {
+    now.ob.covid.pred.zoo <- window(lista.ob.covid$now.pred.zoo, start = dia.zero.ob.covid)
+    now.ob.covid.proj.zoo  <- window(now.ob.covid.proj.zoo, start = dia.zero.ob.covid)
+  }
 }
 
 #####################
@@ -101,8 +121,10 @@ if (existe.ob.srag) {
   
   ## 4.3. Corta a partir do dia com >= 10 casos ####
   dia.zero.ob.srag <- time(lista.ob.srag$now.pred.zoo)[min(which(lista.ob.srag$now.pred.zoo$n.casos >= 10, arr.ind = TRUE))]
-  now.ob.srag.pred.zoo <- window(lista.ob.srag$now.pred.zoo, start = dia.zero.ob.srag)
-  now.ob.srag.proj.zoo  <- window(now.ob.srag.proj.zoo, start = dia.zero.ob.srag)
+  if (!is.na(dia.zero.ob.srag)) {
+    now.ob.srag.pred.zoo <- window(lista.ob.srag$now.pred.zoo, start = dia.zero.ob.srag)
+    now.ob.srag.proj.zoo  <- window(now.ob.srag.proj.zoo, start = dia.zero.ob.srag)
+  }
 }
 
   
