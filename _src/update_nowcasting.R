@@ -103,7 +103,7 @@ nomes.fct.plot <- c("plot.formatos",
 
 # lista os plots gerados
 all.plots <- ls(pattern = "^plot.") # tudo que comeca com plot
-real.plots <- !all.plots %in% nomes.fct.plot # so o que é grafico mesmo
+real.plots <- all.plots[!all.plots %in% nomes.fct.plot] # so o que é grafico mesmo
 
 # Graficos a serem atualizados
 plots.para.atualizar <- makeNamedList(
