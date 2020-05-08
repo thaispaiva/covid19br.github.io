@@ -233,7 +233,7 @@ prepara.dados <- function(tipo = "covid",
         }
     }
     nome.dir <- paste0("../dados/", adm, "_", sigla.adm, "/")
-    data.base <- dir(nome.dir, pattern = paste0("nowcasting_", tipo, "_20")) %>% 
+    data.base <- dir(nome.dir, pattern = paste0("n_casos_", ".+", tipo, "_20")) %>% 
         stringr::str_extract("(19|20)\\d\\d[_ /.](0[1-9]|1[012])[_ /.](0[1-9]|[12][0-9]|3[01])") %>% #prfct
         as.Date(format = "%Y_%m_%d") %>%
         max() %>%
@@ -304,9 +304,9 @@ prepara.dados <- function(tipo = "covid",
     # lista para salvar os objetos
     pred <- list(now.pred = now.pred, 
                  now.pred.zoo = now.pred.zoo,
-                 now.params.post = now.params.post
+                 now.params.post = now.params.post,
                  now.pred.original = now.pred.original, 
-                 now.pred.zoo.original = now.pred.zoo.original,
+                 now.pred.zoo.original = now.pred.zoo.original
                  ##now.lista = now.lista
                  )
     
@@ -326,7 +326,7 @@ prepara.dados <- function(tipo = "covid",
 now.proj <- function(pred, 
                      pred.original, 
                      now.params.post,
-                     n.dias = 5){
+                     n.dias = 5) {
     ## N de dias para projetar: 5 dias a partir da data atual
     ## Adiciona ao forecast dias entre a ultima data de nocasting e o dia atual
     days.to.forecast <- as.integer(Sys.Date() - max(time(pred)) + n.dias)

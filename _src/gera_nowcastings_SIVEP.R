@@ -173,8 +173,7 @@ n.notificacoes.srag <- dados2.srag %>%
     group_by(dt_notific) %>%
     summarise(n.notific = n()) %>%
     as.data.frame()
-##obitos covid##NOTIFICACAO É ENCERRA
-##%PI: como queremos contar quantos casos foram a obito pela data que foram notificados aqui é notidicacao mesmo
+##obitos covid##
 n.notificacoes.obitos.covid <- dados2.obitos_covid %>%
     group_by(dt_notific) %>%
     summarise(n.notific = n()) %>%
@@ -216,31 +215,34 @@ n.data.obitos.srag  <-
 ## Grava os objetos
 ################################################################################
 ## nomes dos objetos e seus paths
-dir.create(paste0("../dados/estado_", estado), showWarnings = FALSE)
+
+output_folder <- paste0("../dados/estado_", estado, "/")
+dir.create(output.folder, showWarnings = FALSE)
+
 ##COVID##
-##nome.now <- paste0("../dados/estado_",estado,"/nowcasting_covid_",format(data.base,"%Y_%m_%d"),".rds")
-nome.now.df <- paste0("../dados/estado_",estado,"/nowcasting_covid_previstos_",format(data.base,"%Y_%m_%d"),".csv")
-nome.now.post <- paste0("../dados/estado_",estado,"/nowcasting_covid_post_",format(data.base,"%Y_%m_%d"),".csv")
-nome.not <- paste0("../dados/estado_",estado,"/notificacoes_covid_",format(data.base,"%Y_%m_%d"),".csv")
-nome.sint <- paste0("../dados/estado_",estado,"/n_casos_data_sintoma_covid_",format(data.base,"%Y_%m_%d"),".csv")
+##nome.now <- paste0(output_folder, "nowcasting_covid_",format(data.base,"%Y_%m_%d"),".rds")
+nome.now.df <- paste0(output_folder, "nowcasting_covid_previstos_",format(data.base,"%Y_%m_%d"),".csv")
+nome.now.post <- paste0(output_folder, "nowcasting_covid_post_",format(data.base,"%Y_%m_%d"),".csv")
+nome.not <- paste0(output_folder, "notificacoes_covid_",format(data.base,"%Y_%m_%d"),".csv")
+nome.sint <- paste0(output_folder, "n_casos_data_sintoma_covid_",format(data.base,"%Y_%m_%d"),".csv")
 ##SRAG##
-##nome.now.srag <- paste0("../dados/estado_",estado,"/nowcasting_srag_",format(data.base,"%Y_%m_%d"),".rds")
-nome.now.df.srag <- paste0("../dados/estado_",estado,"/nowcasting_srag_previstos_",format(data.base,"%Y_%m_%d"),".csv")
-nome.now.post.srag <- paste0("../dados/estado_",estado,"/nowcasting_srag_post_",format(data.base,"%Y_%m_%d"),".csv")
-nome.not.srag <- paste0("../dados/estado_",estado,"/notificacoes_srag_",format(data.base,"%Y_%m_%d"),".csv")
-nome.sint.srag <- paste0("../dados/estado_",estado,"/n_casos_data_sintoma_srag_",format(data.base,"%Y_%m_%d"),".csv")
+##nome.now.srag <- paste0(output_folder, "nowcasting_srag_",format(data.base,"%Y_%m_%d"),".rds")
+nome.now.df.srag <- paste0(output_folder, "nowcasting_srag_previstos_",format(data.base,"%Y_%m_%d"),".csv")
+nome.now.post.srag <- paste0(output_folder, "nowcasting_srag_post_",format(data.base,"%Y_%m_%d"),".csv")
+nome.not.srag <- paste0(output_folder, "notificacoes_srag_",format(data.base,"%Y_%m_%d"),".csv")
+nome.sint.srag <- paste0(output_folder, "n_casos_data_sintoma_srag_",format(data.base,"%Y_%m_%d"),".csv")
 ##Obitos covid##
-##nome.now.ob.covid <- paste0("../dados/estado_",estado,"/nowcasting_obitos_covid_",format(data.base,"%Y_%m_%d"),".rds")
-nome.now.df.ob.covid <- paste0("../dados/estado_",estado,"/nowcasting_obitos_covid_previstos_",format(data.base,"%Y_%m_%d"),".csv")
-nome.now.post.ob.covid <- paste0("../dados/estado_",estado,"/nowcasting_obitos_covid_post_",format(data.base,"%Y_%m_%d"),".csv")
-nome.not.ob.covid <- paste0("../dados/estado_",estado,"/notificacoes_obitos_covid_",format(data.base,"%Y_%m_%d"),".csv")
-nome.data.ob.covid <- paste0("../dados/estado_",estado,"/n_casos_data_obitos_covid_",format(data.base,"%Y_%m_%d"),".csv")
+##nome.now.ob.covid <- paste0(output_folder, "nowcasting_obitos_covid_",format(data.base,"%Y_%m_%d"),".rds")
+nome.now.df.ob.covid <- paste0(output_folder, "nowcasting_obitos_covid_previstos_",format(data.base,"%Y_%m_%d"),".csv")
+nome.now.post.ob.covid <- paste0(output_folder, "nowcasting_obitos_covid_post_",format(data.base,"%Y_%m_%d"),".csv")
+nome.not.ob.covid <- paste0(output_folder, "notificacoes_obitos_covid_",format(data.base,"%Y_%m_%d"),".csv")
+nome.data.ob.covid <- paste0(output_folder, "n_casos_data_obitos_covid_",format(data.base,"%Y_%m_%d"),".csv")
 ##SRAG##
-##nome.now.ob.srag <- paste0("../dados/estado_",estado,"/nowcasting_obitos_srag_",format(data.base,"%Y_%m_%d"),".rds")
-nome.now.df.ob.srag <- paste0("../dados/estado_",estado,"/nowcasting_obitos_srag_previstos_",format(data.base,"%Y_%m_%d"),".csv")
-nome.now.post.ob.srag <- paste0("../dados/estado_",estado,"/nowcasting_obitos_srag_post_",format(data.base,"%Y_%m_%d"),".csv")
-nome.not.ob.srag <- paste0("../dados/estado_",estado,"/notificacoes_obitos_srag_",format(data.base,"%Y_%m_%d"),".csv")
-nome.data.ob.srag <- paste0("../dados/estado_",estado,"/n_casos_data_obitos_srag_",format(data.base,"%Y_%m_%d"),".csv")
+##nome.now.ob.srag <- paste0(output_folder, "nowcasting_obitos_srag_",format(data.base,"%Y_%m_%d"),".rds")
+nome.now.df.ob.srag <- paste0(output_folder, "nowcasting_obitos_srag_previstos_",format(data.base,"%Y_%m_%d"),".csv")
+nome.now.post.ob.srag <- paste0(output_folder, "nowcasting_obitos_srag_post_",format(data.base,"%Y_%m_%d"),".csv")
+nome.not.ob.srag <- paste0(output_folder, "notificacoes_obitos_srag_",format(data.base,"%Y_%m_%d"),".csv")
+nome.data.ob.srag <- paste0(output_folder, "n_casos_data_obitos_srag_",format(data.base,"%Y_%m_%d"),".csv")
 
 ## Grava os objetos
 ## Output do nowcasting. Uma lista, por isso é salvo em RDS
