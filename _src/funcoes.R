@@ -402,21 +402,18 @@ formata.now.df <- function(now.pred.zoo,
     time.now <- time(now.pred.zoo)
     df.zoo <- cbind(as.data.frame(now.pred.zoo), data = as.character(time.now))
     # notificados
-    df.not <- window(now.pred.zoo, end = end.time.now)
+    df.not <- as.data.frame(window(now.pred.zoo, end = end.time.now))
     df.not$tipo <- "Notificado"
-    df.not$data <- as.character(time(df.not))
+    df.not$data <- row.names(df.not)
     # nowcasting
-    df.now <- window(now.pred.zoo, start = min(time(lista$now.pred.zoo.original)) + 1)
+    df.now <- as.data.frame(window(now.pred.zoo, start = min(time(lista$now.pred.zoo.original)) + 1))
     df.now$tipo <- "Nowcasting"
-    df.now$data <- as.character(time(df.now))
+    df.now$data <- row.names(df.now)
     # predict
-    df.pred <- window(now.pred.zoo, start = min(time(lista$now.pred.zoo.original)) + 1)
+    df.pred <- as.data.frame(window(now.pred.zoo, start = min(time(lista$now.pred.zoo.original)) + 1))
     names(df.pred) <- paste0(names(df.pred), ".pred")
-    df.pred$data <- as.character(time(df.pred))
-    df.pred <- as.data.frame(df.pred)
-    df.plot <- data.frame(data = as.character(time.now), 
-                          pontos = c(df.not$n.casos, df.now$estimate), 
-                          tipo = c(df.not$tipo, df.now$tipo)) %>%
+    df.pred$data <- row.names(df.pred)
+    df.plot <- full_join(df.not[, c('data', 'n.casos')], df.now[, c('data', 'estimate')]) %>%
         full_join(., df.zoo[, c('data', 'estimate.merged', 'estimate.merged.smooth')]) %>%
         full_join(., df.pred[, c('data', 'lower.merged.pred', 'upper.merged.pred')]) %>%
         mutate(data = as.Date(data))
