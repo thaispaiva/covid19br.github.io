@@ -1,14 +1,7 @@
+library(dplyr)
 source("funcoes.R")
 
-# Helper function
-end.time <- function(pred.zoo, pred.zoo.original){
-  if (min(time(pred.zoo.original)) < min(time(pred.zoo))) {
-    end.time <- min(time(pred.zoo))
-  } else {
-    end.time <- min(time(pred.zoo.original))
-  }
-  return(end.time)
-}
+
 
 ###############
 # 1. COVID ####
@@ -40,9 +33,12 @@ if (existe.covid) {
     now.pred.zoo <- window(lista.covid$now.pred.zoo, start = dia.zero)
     now.proj.zoo <- window(now.proj.zoo, start = dia.zero)
   }
-  ## 1.5 Gera df para grafico
-  end.time.covid <- end.time(now.pred.zoo, lista.covid$now.pred.zoo.original)
+  
+  ## 1.5 Gera df para grafico ####
+  df.covid <- formata.now.df(now.pred.zoo, 
+                             lista.covid)
 }
+
 
 ###############
 # 2. SRAG #####
@@ -74,9 +70,9 @@ if (existe.srag) {
     now.srag.pred.zoo <- window(lista.srag$now.pred.zoo, start = dia.zero.srag)
     now.srag.proj.zoo <- window(now.srag.proj.zoo, start = dia.zero.srag)
   }
-  ## 3.4. Cria df para plot
-  end.time.srag <- end.time(now.srag.pred.zoo, lista.srag$now.pred.zoo.original)
-  a <- window(now.srag.pred.zoo, end = end.time.srag)
+  ## 2.5. Gera df para grafico ####
+  df.srag <- formata.now.df(now.srag.pred.zoo, 
+                             lista.srag)
 }
 
 ######################
@@ -101,6 +97,10 @@ if (existe.ob.covid) {
     now.ob.covid.pred.zoo <- window(lista.ob.covid$now.pred.zoo, start = dia.zero.ob.covid)
     now.ob.covid.proj.zoo  <- window(now.ob.covid.proj.zoo, start = dia.zero.ob.covid)
   }
+  
+  ## 3.4. Gera df para grafico ####
+  df.ob.covid <- formata.now.df(now.ob.covid.pred.zoo, 
+                                lista.ob.covid)
 }
 
 #####################
@@ -125,6 +125,10 @@ if (existe.ob.srag) {
     now.ob.srag.pred.zoo <- window(lista.ob.srag$now.pred.zoo, start = dia.zero.ob.srag)
     now.ob.srag.proj.zoo  <- window(now.ob.srag.proj.zoo, start = dia.zero.ob.srag)
   }
+  
+  ## 4.4. Gera df para grafico
+  df.ob.srag <- formata.now.df(now.ob.covid.pred.zoo, 
+                                lista.ob.covid)
 }
 
   

@@ -385,3 +385,40 @@ existe.nowcasting <- function(adm = adm,
                                   pattern = paste0("nowcasting", ".+", tipo, ".+.csv"))
     length(nowcasting.file) > 0
 }
+
+## Funcao para formatar data.frame para o grafico de nowcasting
+formata.now.df <- function(now.pred.zoo, 
+                           lista) {
+    # Helper function
+    end.time <- function(pred.zoo, pred.zoo.original){
+        if (min(time(pred.zoo.original)) < min(time(pred.zoo))) {
+            end.time <- min(time(pred.zoo))
+        } else {
+            end.time <- min(time(pred.zoo.original))
+        }
+        return(end.time)
+    }
+    end.time.now <- end.time(now.pred.zoo, lista$now.pred.zoo.original)
+    time.now <- time(now.pred.zoo)
+    df.zoo <- cbind(as.data.frame(now.pred.zoo), data = as.character(time.now))
+    # notificados
+    df.not <- window(now.pred.zoo, end = end.time.now)
+    df.not$tipo <- "Notificado"
+    df.not$data <- as.character(time(df.not))
+    # nowcasting
+    df.now <- window(now.pred.zoo, start = min(time(lista$now.pred.zoo.original)) + 1)
+    df.now$tipo <- "Nowcasting"
+    df.now$data <- as.character(time(df.now))
+    # predict
+    df.pred <- window(now.pred.zoo, start = min(time(lista$now.pred.zoo.original)) + 1)
+    names(df.pred) <- paste0(names(df.pred), ".pred")
+    df.pred$data <- as.character(time(df.pred))
+    df.pred <- as.data.frame(df.pred)
+    df.plot <- data.frame(data = as.character(time.now), 
+                          pontos = c(df.not$n.casos, df.now$estimate), 
+                          tipo = c(df.not$tipo, df.now$tipo)) %>%
+        full_join(., df.zoo[, c('data', 'estimate.merged', 'estimate.merged.smooth')]) %>%
+        full_join(., df.pred[, c('data', 'lower.merged.pred', 'upper.merged.pred')]) %>%
+        mutate(data = as.Date(data))
+    return(df.plot)
+}
