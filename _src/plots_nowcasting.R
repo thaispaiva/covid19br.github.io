@@ -15,12 +15,7 @@ plot.formatos <- theme_bw() +
           plot.margin = margin(2, 0, 0, 0, "pt"))
 
 
-################################################################################
-## N de novos casos observados e por nowcasting
-## Com linha de média móvel
-################################################################################
-## COVID
-
+# srm: mantendo isso aqui por enquanto, mas ja ja sai
 # Helper function
 end.time <- function(pred.zoo, pred.zoo.original){
     if (min(time(pred.zoo.original)) < min(time(pred.zoo))) {
@@ -31,106 +26,41 @@ end.time <- function(pred.zoo, pred.zoo.original){
     return(end.time)
 }
 
+################################################################################
+## N de novos casos observados e por nowcasting
+## Com linha de média móvel
+################################################################################
+## COVID
+
 end.time.covid <- end.time(now.pred.zoo, lista.covid$now.pred.zoo.original)
 
-plot.nowcast.covid <-
-    now.pred.zoo %>%
-    ggplot(aes(Index)) +
+plot.nowcast.covid <- 
+    df.covid %>%
+    ggplot(aes(x = data)) +
     geom_line(aes(y = estimate.merged), lty = 2, col = "grey") +
-    geom_point(data = window(now.pred.zoo, end = end.time.covid),
-               aes(y = n.casos, col = "Notificado"), size = 2) +
-    geom_point(data = window(now.pred.zoo, start = min(time(lista.covid$now.pred.zoo.original)) + 1),
-               aes(y = estimate, col = "Nowcasting"), size = 2) +
-    geom_ribbon(data = window(now.pred.zoo, start = min(time(lista.covid$now.pred.zoo.original)) + 1),
-                aes(x = Index, ymin = lower.merged, ymax = upper.merged),
-                fill = RColorBrewer::brewer.pal(3, "Set1")[2], alpha = 0.1) + 
+    geom_point(aes(y = n.casos, col = "Notificado"), size = 2) +
+    geom_point(aes(y = estimate, col = "Nowcasting"), size = 2) +
+    geom_ribbon(aes(ymin = lower.merged.pred, ymax = upper.merged.pred),
+                fill = RColorBrewer::brewer.pal(3, "Set1")[2], alpha = 0.1) +
     geom_line(aes(y = estimate.merged.smooth), alpha = 0.6, size = 2) +
-    ##geom_ribbon(data= window(now.pred.zoo, start=min(time(now.pred.zoo.original))+1),
-    ##            aes(x = Index, ymin = lower.merged.smooth, ymax= upper.merged.smooth),
-    ##            fill = "darkblue", alpha =0.2) +
     scale_x_date(date_labels = "%d/%b") +
     scale_color_manual(name = "", values = RColorBrewer::brewer.pal(3, "Set1")[1:2]) +
     xlab("Dia do primeiro sintoma") +
     ylab("Número de novos casos") +
     plot.formatos +
     theme(legend.position = c(0.2,0.8))
-
+    
 ## SRAG
 end.time.srag <- end.time(now.srag.pred.zoo, lista.srag$now.pred.zoo.original)
-
-plot.nowcast.srag <-
-    now.srag.pred.zoo %>%
-    ggplot(aes(Index)) +
-    geom_line(aes(y = estimate.merged), lty = 2, col = "grey") +
-    geom_point(data = window(now.srag.pred.zoo, end = end.time.srag),
-               aes(y = n.casos, col = "Notificado"), size = 2) +
-    geom_point(data = window(now.srag.pred.zoo, start = min(time(lista.srag$now.pred.zoo.original)) + 1),
-               aes(y = estimate, col = "Nowcasting"), size = 2) +
-    geom_ribbon(data = window(now.srag.pred.zoo, start = min(time(lista.srag$now.pred.zoo.original)) + 1),
-                aes(x = Index, ymin = lower.merged, ymax = upper.merged),
-                fill = RColorBrewer::brewer.pal(3, "Set1")[2], alpha = 0.1) +
-    geom_line(aes(y = estimate.merged.smooth), alpha = 0.6, size = 2) +
-    ##geom_ribbon(data= window(now.srag.pred.zoo, start=min(time(now.srag.pred.zoo.original))+1),
-    ##            aes(x = Index, ymin = lower.merged.smooth, ymax= upper.merged.smooth),
-    ##            fill = "darkblue", alpha =0.2) +
-    scale_x_date(date_labels = "%d/%b") +
-    scale_color_manual(name = "", values = RColorBrewer::brewer.pal(3, "Set1")[1:2]) +
-    xlab("Dia do primeiro sintoma") +
-    ylab("Número de novos óbitos") +
-    plot.formatos +
-    theme(legend.position = c(0.2,0.8))
-
-#### obitos ####
-
-end.time.ob.covid <- end.time(now.ob.covid.pred.zoo, lista.ob.covid$now.pred.zoo.original)
+plot.nowcast.srag <- plot.nowcast.covid %+% fortify(df.srag)
 
 ## OBITOS COVID
-plot.nowcast.ob.covid <-
-    now.ob.covid.pred.zoo %>%
-    ggplot(aes(Index)) +
-    geom_line(aes(y = estimate.merged), lty = 2, col = "grey") +
-    geom_point(data = window(now.ob.covid.pred.zoo, end = end.time.ob.covid),
-               aes(y = n.casos, col = "Notificado"), size = 2) +
-    geom_point(data = window(now.ob.covid.pred.zoo, start = min(time(lista.ob.covid$now.pred.zoo.original)) + 1),
-               aes(y = estimate, col = "Nowcasting"), size = 2) +
-    geom_ribbon(data = window(now.ob.covid.pred.zoo, start = min(time(lista.ob.covid$now.pred.zoo.original)) + 1),
-                aes(x = Index, ymin = lower.merged, ymax = upper.merged),
-                fill = RColorBrewer::brewer.pal(3, "Set1")[2], alpha = 0.1)+
-    geom_line(aes(y = estimate.merged.smooth), alpha = 0.6, size = 2) +
-    ##geom_ribbon(data= window(now.pred.zoo, start=min(time(now.pred.zoo.original))+1),
-    ##            aes(x = Index, ymin = lower.merged.smooth, ymax= upper.merged.smooth),
-    ##            fill = "darkblue", alpha =0.2) +
-    scale_x_date(date_labels = "%d/%b") +
-    scale_color_manual(name = "", values = RColorBrewer::brewer.pal(3, "Set1")[1:2]) +
-    xlab("Dia do óbito") +
-    ylab("Número de novos óbitos") +
-    plot.formatos +
-    theme(legend.position = c(0.2, 0.8))
+end.time.ob.covid <- end.time(now.ob.covid.pred.zoo, lista.ob.covid$now.pred.zoo.original)
+plot.nowcast.ob.covid <- plot.nowcast.covid %+% fortify(df.ob.covid)
 
 ## OBITOS SRAG
 end.time.ob.srag <- end.time(now.pred.zoo, lista.ob.srag$now.pred.zoo.original)
-
-plot.nowcast.ob.srag <-
-    now.ob.srag.pred.zoo %>%
-    ggplot(aes(Index)) +
-    geom_line(aes(y = estimate.merged), lty = 2, col = "grey") +
-    geom_point(data = window(now.ob.srag.pred.zoo, end = end.time.ob.srag),
-               aes(y = n.casos, col = "Notificado"), size = 2) +
-    geom_point(data = window(now.ob.srag.pred.zoo, start = min(time(lista.ob.srag$now.pred.zoo.original)) + 1),
-               aes(y = estimate, col = "Nowcasting"), size = 2) +
-    geom_ribbon(data = window(now.ob.srag.pred.zoo, start = min(time(lista.ob.srag$now.pred.zoo.original)) + 1),
-                aes(x = Index, ymin = lower.merged, ymax = upper.merged),
-                fill = RColorBrewer::brewer.pal(3, "Set1")[2], alpha = 0.1) +
-    geom_line(aes(y = estimate.merged.smooth), alpha = 0.6, size = 2) +
-    ##geom_ribbon(data= window(now.pred.zoo, start=min(time(now.pred.zoo.original))+1),
-    ##            aes(x = Index, ymin = lower.merged.smooth, ymax= upper.merged.smooth),
-    ##            fill = "darkblue", alpha =0.2) +
-    scale_x_date(date_labels = "%d/%b") +
-    scale_color_manual(name = "", values = RColorBrewer::brewer.pal(3, "Set1")[1:2]) +
-    xlab("Dia do óbito") +
-    ylab("Número de novos óbitos") +
-    plot.formatos +
-    theme(legend.position = c(0.2, 0.8))
+plot.nowcast.ob.srag <- plot.nowcast.covid %+% fortify(df.ob.srag)
 
 
 ################################################################################
