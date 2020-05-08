@@ -82,7 +82,7 @@ if (existe.srag) {
     plot.tempo.dupl.srag <- plot.tempo.dupl(td.now.srag)
     
     ### R efetivo
-    plot.estimate.R0.covid <- plot.estimate.R0(Re.now.srag.zoo)
+    plot.estimate.R0.srag <- plot.estimate.R0(Re.now.srag.zoo)
     
     # TABELAS ####
     
