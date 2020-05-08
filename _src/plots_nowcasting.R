@@ -14,28 +14,14 @@ plot.formatos <- theme_bw() +
           title = element_text(size = 12),
           plot.margin = margin(2, 0, 0, 0, "pt"))
 
-
-# srm: mantendo isso aqui por enquanto, mas ja ja sai
-# Helper function
-end.time <- function(pred.zoo, pred.zoo.original){
-    if (min(time(pred.zoo.original)) < min(time(pred.zoo))) {
-        end.time <- min(time(pred.zoo))
-    } else {
-        end.time <- min(time(pred.zoo.original))
-    }
-    return(end.time)
-}
-
 ################################################################################
 ## N de novos casos observados e por nowcasting
 ## Com linha de média móvel
 ################################################################################
 ## COVID
 
-end.time.covid <- end.time(now.pred.zoo, lista.covid$now.pred.zoo.original)
-
 plot.nowcast.covid <- 
-    df.covid %>%
+    df.covid.diario %>%
     ggplot(aes(x = data)) +
     geom_line(aes(y = estimate.merged), lty = 2, col = "grey") +
     geom_point(aes(y = n.casos, col = "Notificado"), size = 2) +
@@ -51,16 +37,13 @@ plot.nowcast.covid <-
     theme(legend.position = c(0.2,0.8))
     
 ## SRAG
-end.time.srag <- end.time(now.srag.pred.zoo, lista.srag$now.pred.zoo.original)
-plot.nowcast.srag <- plot.nowcast.covid %+% fortify(df.srag)
+plot.nowcast.srag <- plot.nowcast.covid %+% fortify(df.srag.diario)
 
 ## OBITOS COVID
-end.time.ob.covid <- end.time(now.ob.covid.pred.zoo, lista.ob.covid$now.pred.zoo.original)
-plot.nowcast.ob.covid <- plot.nowcast.covid %+% fortify(df.ob.covid)
+plot.nowcast.ob.covid <- plot.nowcast.covid %+% fortify(df.ob.covid.diario)
 
 ## OBITOS SRAG
-end.time.ob.srag <- end.time(now.pred.zoo, lista.ob.srag$now.pred.zoo.original)
-plot.nowcast.ob.srag <- plot.nowcast.covid %+% fortify(df.ob.srag)
+plot.nowcast.ob.srag <- plot.nowcast.covid %+% fortify(df.ob.srag.diario)
 
 
 ################################################################################

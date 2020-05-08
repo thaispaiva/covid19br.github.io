@@ -36,7 +36,10 @@ if (existe.covid) {
   
   ## 1.5 Gera df para grafico ####
   df.covid <- formata.now.df(now.pred.zoo, 
+                             now.proj.zoo,
                              lista.covid)
+  df.covid.diario <- df.covid$diario
+  df.covid.cum <- df.covid$acumulado
 }
 
 
@@ -72,7 +75,10 @@ if (existe.srag) {
   }
   ## 2.5. Gera df para grafico ####
   df.srag <- formata.now.df(now.srag.pred.zoo, 
+                            now.srag.proj.zoo,
                              lista.srag)
+  df.srag.diario <- df.srag$diario
+  df.srag.cum <- df.srag$acumulado
 }
 
 ######################
@@ -100,7 +106,10 @@ if (existe.ob.covid) {
   
   ## 3.4. Gera df para grafico ####
   df.ob.covid <- formata.now.df(now.ob.covid.pred.zoo, 
+                                now.ob.covid.proj.zoo,
                                 lista.ob.covid)
+  df.ob.covid.diario <- df.ob.covid$diario
+  df.ob.srag.cum <- df.ob.covid$acumulado
 }
 
 #####################
@@ -127,8 +136,11 @@ if (existe.ob.srag) {
   }
   
   ## 4.4. Gera df para grafico
-  df.ob.srag <- formata.now.df(now.ob.covid.pred.zoo, 
-                                lista.ob.covid)
+  df.ob.srag <- formata.now.df(now.ob.srag.pred.zoo, 
+                               now.ob.srag.proj.zoo,
+                               lista.ob.srag)
+  df.ob.srag.diario <- df.ob.srag$diario
+  df.ob.srag.cum <- df.ob.srag$acumulado
 }
 
   
