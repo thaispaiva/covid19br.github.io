@@ -224,7 +224,8 @@ Re.com.data <- function(ncasos, datas, dia0 = min(datas), delay = 5){
 #' @param sigla.adm Caractere. Sigla da unidade administrativa. Para municípios por enquanto apenas SP disponível
 prepara.dados <- function(tipo = "covid", 
                           adm,
-                          sigla.adm) { # tipos possiveis: covid, srag, obitos_covid e obitos_srag
+                          sigla.adm,
+                          data.base) { # tipos possiveis: covid, srag, obitos_covid e obitos_srag
     casos <- c("covid", "srag")
     obitos <- c("obitos_covid", "obitos_srag")
     if (adm == "municipio") {
@@ -233,11 +234,14 @@ prepara.dados <- function(tipo = "covid",
         }
     }
     nome.dir <- paste0("../dados/", adm, "_", sigla.adm, "/")
-    data.base <- dir(nome.dir, pattern = paste0("n_casos_", ".+", tipo, "_20")) %>% 
+    if (missing(data.base))
+    data.base <- dir(nome.dir, pattern = paste0("nowcasting", ".+", tipo,".+", "_20")) %>% 
         stringr::str_extract("(19|20)\\d\\d[_ /.](0[1-9]|1[012])[_ /.](0[1-9]|[12][0-9]|3[01])") %>% #prfct
         as.Date(format = "%Y_%m_%d") %>%
         max() %>%
         format("%Y_%m_%d")
+    
+    
     ## Importa dados em objetos de séries temporais (zoo)
     ## Serie completa de n de notificacoes
     n.notificados <- read.csv(paste0(nome.dir,"notificacoes_", tipo, "_", data.base,".csv"))
