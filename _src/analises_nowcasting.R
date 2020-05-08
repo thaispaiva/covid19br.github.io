@@ -1,6 +1,5 @@
 source("funcoes.R")
 
-
 # COVID #### 
 now.proj.zoo <- now.proj(pred = lista.covid$now.pred.zoo, 
                          pred.original = lista.covid$now.pred.original, 
@@ -9,28 +8,31 @@ now.proj.zoo <- now.proj(pred = lista.covid$now.pred.zoo,
 # SRAG ####
 now.srag.proj.zoo <-  now.proj(pred = lista.srag$now.pred.zoo, 
                                pred.original = lista.srag$now.pred.original, 
-                               now.lista = lista.srag$now.params.post)
+                               now.params.post = lista.srag$now.params.post)
 
 # OBITOS COVID ####
 now.ob.covid.proj.zoo <-  now.proj(pred = lista.ob.covid$now.pred.zoo, 
                                    pred.original = lista.ob.covid$now.pred.original, 
-                                   now.lista = lista.ob.covid$now.params.post)
+                                   now.params.post = lista.ob.covid$now.params.post)
 
 # OBITOS SRAG ####
 now.ob.srag.proj.zoo <-  now.proj(pred = lista.ob.srag$now.pred.zoo, 
                                   pred.original = lista.ob.srag$now.pred.original, 
-                                  now.lista = lista.ob.srag$now.params.post)
+                                  now.params.post = lista.ob.srag$now.params.post)
 
 ################################################################################
 ## Cálculo do R efetivo ##
 ################################################################################
 ## COVID ##
-Re.now <- Re.com.data(ncasos = lista.covid$now.pred.zoo$upper.merged, datas = time(lista.covid$now.pred.zoo), delay = 7)
+Re.now <- Re.com.data(ncasos = lista.covid$now.pred.zoo$upper.merged,
+                      datas = time(lista.covid$now.pred.zoo), 
+                      delay = 7)
 ## Objeto time series indexado pela data de fim de cada janela de cálculo
 Re.now.zoo <- zoo(Re.now$R[, -(12:13)], Re.now$R[, 13]) 
 
 ## SRAG ##
-Re.now.srag <- Re.com.data(ncasos = lista.srag$now.pred.zoo$upper.merged, datas = time(lista.srag$now.pred.zoo), delay = 7)
+Re.now.srag <- Re.com.data(ncasos = lista.srag$now.pred.zoo$upper.merged, 
+                           datas = time(lista.srag$now.pred.zoo), delay = 7)
 ## Objeto time series indexado pela data de fim de cada janela de cálculo
 Re.now.srag.zoo <- zoo(Re.now.srag$R[, -(12:13)], Re.now.srag$R[, 13]) 
 
