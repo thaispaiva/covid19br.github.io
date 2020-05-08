@@ -9,7 +9,7 @@ today=`LANG=en date +'%b %-d'`
 today_=`date +'%Y_%m_%d'`
 todaydash=`date +'%Y-%m-%d'`
 
-out="nowcasting_covid_${today_}.rds"
+out="nowcasting_covid_previstos_${today_}.csv"
 
 ## paralelize code
 # initialize a semaphore with a given number of tokens
@@ -49,11 +49,11 @@ if [[ $novos_dados = 0 && ! -f "../dados/Estado_SP/$out" ]]; then
     done
 
     git pull
-    git add ../dados/Estado_*/{n_casos_data_obitos_covid_${today_}.csv,n_casos_data_obitos_srag_${today_}.csv,n_casos_data_sintoma_covid_${today_}.csv,n_casos_data_sintoma_srag_${today_}.csv,notificacoes_covid_${today_}.csv,notificacoes_obitos_covid_${today_}.csv,notificacoes_obitos_srag_${today_}.csv,notificacoes_srag_${today_}.csv,nowcasting_covid_${today_}.rds,nowcasting_covid_previstos_${today_}.csv,nowcasting_obitos_covid_${today_}.rds,nowcasting_obitos_covid_previstos_${today_}.csv,nowcasting_obitos_srag_${today_}.rds,nowcasting_obitos_srag_previstos_${today_}.csv,nowcasting_srag_${today_}.rds,nowcasting_srag_previstos_${today_}.csv} &&
-    git commit -m "[auto] atualizando paginas nowcasting Estados" &&
+    git add ../dados/Estado_*/{n_casos_data_obitos_covid_${today_}.csv,n_casos_data_obitos_srag_${today_}.csv,n_casos_data_sintoma_covid_${today_}.csv,n_casos_data_sintoma_srag_${today_}.csv,notificacoes_covid_${today_}.csv,notificacoes_obitos_covid_${today_}.csv,notificacoes_obitos_srag_${today_}.csv,notificacoes_srag_${today_}.csv,nowcasting_covid_previstos_${today_}.csv,nowcasting_obitos_covid_previstos_${today_}.csv,nowcasting_obitos_srag_previstos_${today_}.csv,nowcasting_srag_previstos_${today_}.csv,nowcasting_covid_post_${today_}.csv,nowcasting_obitos_covid_post_${today_}.csv,nowcasting_obitos_srag_post_${today_}.csv,nowcasting_srag_post_${today_}.csv} &&
+    git commit -m "[auto] atualizando projecoes nowcasting Estados" &&
     git push
 
     for estado in $estados; do
-        Rscript update_nowcasting.R --adm estado --sigla $estado
+        run_with_lock Rscript update_nowcasting.R --estado estado --sigla $estado
     done
 fi
