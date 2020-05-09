@@ -43,6 +43,14 @@ if (existe.covid) {
                              lista.covid)
   df.covid.diario <- df.covid$diario
   df.covid.cum <- df.covid$acumulado
+  # salva o df em csv apenas para municipio SP por enquanto
+  if (adm == "municipio" & sigla.adm == "SP") {
+    df.path <- paste0("../dados/", adm, "_", sigla.adm, "/tabelas_nowcasting_para_grafico/")
+    if (!dir.exists(df.path)) dir.create(df.path)
+    write.csv(file = df.covid.cum, 
+              file.name = paste0("nowcasting_acumulado_covid_", data.base, ".csv"), 
+              row.names = FALSE)
+  }
 }
 
 
