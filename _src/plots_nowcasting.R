@@ -62,6 +62,11 @@ if (existe.covid) {
                 file = paste0(web.path, "data_Re_", adm, "_", tolower(sigla.adm), "_covid.csv"), 
                 row.names = TRUE, col.names = FALSE)
     
+} else {
+    plot.nowcast.covid <- NULL
+    plot.nowcast.cum.covid <- NULL
+    plot.estimate.R0.covid <- NULL
+    plot.tempo.dupl.covid <- NULL
 }
 
 ############
@@ -117,6 +122,11 @@ if (existe.srag) {
                 file = paste0(web.path, "data_Re_", adm, "_", tolower(sigla.adm), "_srag.csv"), 
                 row.names = TRUE, col.names = FALSE)
     
+} else {
+    plot.nowcast.srag <- NULL
+    plot.nowcast.cum.srag <- NULL
+    plot.estimate.R0.srag <- NULL
+    plot.tempo.dupl.srag <- NULL
 }
 
 #####################
@@ -138,6 +148,10 @@ if (existe.ob.covid) {
     
     ### tempo de duplicação
     plot.tempo.dupl.ob.covid <- plot.tempo.dupl(td.now.ob.covid)
+} else {
+    plot.nowcast.ob.covid <- NULL
+    plot.nowcast.cum.ob.covid <- NULL
+    plot.tempo.dupl.ob.covid <- NULL
 }
 
 ####################
@@ -159,5 +173,9 @@ if (existe.ob.srag) {
     
     ### tempo de duplicação
     plot.tempo.dupl.ob.srag <- plot.tempo.dupl(td.now.ob.srag)
+} else {
+    plot.nowcast.ob.srag <- NULL
+    plot.nowcast.cum.ob.srag <- NULL
+    plot.tempo.dupl.ob.srag <- NULL
 }
 
