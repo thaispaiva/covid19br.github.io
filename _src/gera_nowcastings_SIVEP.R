@@ -163,6 +163,7 @@ dados2.obitos_srag <-
 
 ## Executa nowcasting diario
 ##COVID##
+if (nrow(dados2) != 0) {
 now.covid <- NobBS(
     data = dados2,
     now = max(dados2$dt_sin_pri) - trim.now,
@@ -170,7 +171,10 @@ now.covid <- NobBS(
     report_date = "dt_pcr_dig",
     units = "1 day",
     moving_window = window)
+}
+
 ##SRAG##
+if (nrow(dados2.srag) != 0) {
 now.srag <- NobBS(
     data = dados2.srag,
     now = max(dados2.srag$dt_sin_pri) - trim.now,
@@ -178,8 +182,10 @@ now.srag <- NobBS(
     report_date = "dt_pcr_dig",
     units = "1 day",
     moving_window = window)
+}
 
 ##obitos COVID##
+if (nrow(dados2.obitos_covid) != 0) {
 now.obitos.covid <- NobBS(
     data = dados2.obitos_covid,
     now = max(dados2.obitos_covid$dt_encerra) - trim.now,
@@ -188,7 +194,9 @@ now.obitos.covid <- NobBS(
     units = "1 day",
     moving_window = window,
     specs = list(beta.priors = dbinom(0:40, size = 40, p = 15/50)))
+}
 ##obitos SRAG##
+if (nrow(dados2.obitos_srag) != 0) {
 now.obitos.srag <- NobBS(
     data = dados2.obitos_srag,
     now = max(dados2.obitos_srag$dt_encerra) - trim.now,
@@ -197,6 +205,7 @@ now.obitos.srag <- NobBS(
     units = "1 day",
     moving_window = window,
     specs = list(beta.priors = dbinom(0:40, size = 40, p = 15/50)))
+}
 
 ################################################################################
 ## Cria data frames com totais obseravdos de casos ou obitos
@@ -283,6 +292,7 @@ nome.now.post.ob.srag <- paste0(output_folder, "nowcasting_obitos_srag_post_",fo
 nome.not.ob.srag <- paste0(output_folder, "notificacoes_obitos_srag_",format(data.base,"%Y_%m_%d"),".csv")
 nome.data.ob.srag <- paste0(output_folder, "n_casos_data_obitos_srag_",format(data.base,"%Y_%m_%d"),".csv")
 
+
 ## Grava os objetos
 ## Output do nowcasting. Uma lista, por isso é salvo em RDS
 ##COVID##
@@ -296,40 +306,48 @@ nome.data.ob.srag <- paste0(output_folder, "n_casos_data_obitos_srag_",format(da
 
 ## Previstos pelo nowcasting: faz parte da lista que que a função de nowcasting retorna,
 ## mas como a lista esta ocupando muito disco agora separamos apenas o que é necessário para so calculos
+## Distribuições posteriores dos parametros do nowcasting. Também faz parte da lista retornada pelo nowcasting
+
 ##COVID##
-write.csv(now.covid$estimates,
+if (exists("now.covid")) {
+  write.csv(now.covid$estimates,
           file = nome.now.df,
           row.names = FALSE)
+  ##COVID# _dist post#
+  write.csv(now.covid$params.post,
+            file = nome.now.post,
+            row.names = FALSE)
+
+}
 ##SRAG##
+if (exists("now.srag")) {
 write.csv(now.srag$estimates,
           file = nome.now.df.srag,
           row.names = FALSE)
+  ##SRAG##
+  write.csv(now.srag$params.post,
+            file = nome.now.post.srag,
+            row.names = FALSE)
+}
 ##obitos##
+if (exists("now.obitos.covid")) {
 write.csv(now.obitos.covid$estimates,
           file = nome.now.df.ob.covid,
           row.names = FALSE)
-##obitos srag##
-write.csv(now.obitos.srag$estimates,
-          file = nome.now.df.ob.srag,
-          row.names = FALSE)
-
-## Distribuições posteriores dos parametros do nowcasting. Também faz parte da lista retornada pelo nowcasting
-##COVID##
-write.csv(now.covid$params.post,
-          file = nome.now.post,
-          row.names = FALSE)
-##SRAG##
-write.csv(now.srag$params.post,
-          file = nome.now.post.srag,
-          row.names = FALSE)
-##obitos##
 write.csv(now.obitos.covid$params.post,
           file = nome.now.post.ob.covid,
           row.names = FALSE)
+}
 ##obitos srag##
+if (exists("now.obitos.srag")) {
+write.csv(now.obitos.srag$estimates,
+          file = nome.now.df.ob.srag,
+          row.names = FALSE)
 write.csv(now.obitos.srag$params.post,
           file = nome.now.post.ob.srag,
           row.names = FALSE)
+}
+
 ## N de casos por data de notificações
 ##COVID##
 write.csv(n.notificacoes,
