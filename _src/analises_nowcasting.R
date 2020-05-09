@@ -47,8 +47,8 @@ if (existe.covid) {
   if (adm == "municipio" & sigla.adm == "SP") {
     df.path <- paste0("../dados/", adm, "_", sigla.adm, "/tabelas_nowcasting_para_grafico/")
     if (!dir.exists(df.path)) dir.create(df.path)
-    write.csv(file = df.covid.cum, 
-              file.name = paste0("nowcasting_acumulado_covid_", data.covid, ".csv"), 
+    write.csv(df.covid.cum, 
+              paste0(df.path, "nowcasting_acumulado_covid_", data.covid, ".csv"), 
               row.names = FALSE)
   }
 }
@@ -99,7 +99,7 @@ if (existe.srag) {
     df.path <- paste0("../dados/", adm, "_", sigla.adm, "/tabelas_nowcasting_para_grafico/")
     if (!dir.exists(df.path)) dir.create(df.path)
     write.csv(df.srag.cum, 
-              paste0("nowcasting_acumulado_srag_", data.srag, ".csv"), 
+              paste0(df.path, "nowcasting_acumulado_srag_", data.srag, ".csv"), 
               row.names = FALSE)
   }
 }
