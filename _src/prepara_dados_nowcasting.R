@@ -15,6 +15,8 @@ existe.ob.srag <- existe.nowcasting(adm = adm, sigla.adm = sigla.adm, tipo = "ob
 ## Dados e nowcastings COVID
 ################################################################################
 if (existe.covid) { 
+  # guarda data mais recente
+  data.covid <- data.base(adm = adm, sigla.adm = sigla.adm, tipo = "covid")
   lista.covid <- prepara.dados(tipo = "covid", 
                                adm = adm, 
                                sigla.adm = sigla.adm)
@@ -23,6 +25,8 @@ if (existe.covid) {
 ## Dados e nowcastings SRAG
 ################################################################################
 if (existe.srag) { 
+  # guardando objeto data.base
+  data.srag <- data.base(adm = adm, sigla.adm = sigla.adm, tipo = "srag")
   lista.srag <- prepara.dados(tipo = "srag",
                               adm = adm, 
                               sigla.adm = sigla.adm)
@@ -31,6 +35,7 @@ if (existe.srag) {
 ## Dados e nowcastings COVID OBITOS
 ################################################################################
 if (existe.ob.covid) { 
+  data.ob.covid <- data.base(adm = adm, sigla.adm = sigla.adm, tipo = "obitos_covid")
   lista.ob.covid <- prepara.dados(tipo = "obitos_covid", 
                                   adm = adm, 
                                   sigla.adm = sigla.adm)
@@ -38,7 +43,8 @@ if (existe.ob.covid) {
 ################################################################################
 ## Dados e nowcastings SRAG OBITOS
 ################################################################################
-if (existe.ob.srag) { 
+if (existe.ob.srag) {
+  data.ob.srag <- data.base(adm = adm, sigla.adm = sigla.adm, tipo = "obitos_srag")
   lista.ob.srag <- prepara.dados(tipo = "obitos_srag", 
                                  adm = adm, 
                                  sigla.adm = sigla.adm)
