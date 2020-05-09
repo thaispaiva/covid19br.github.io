@@ -33,6 +33,8 @@ if (existe.covid) {
     now.pred.zoo <- window(lista.covid$now.pred.zoo, start = dia.zero)
     now.proj.zoo <- window(now.proj.zoo, start = dia.zero)
     td.now <- window(td.now, start = dia.zero)
+  } else {
+    now.pred.zoo <- lista.covid$now.pred.zoo
   }
   
   ## 1.5 Gera df para grafico ####
@@ -74,7 +76,10 @@ if (existe.srag) {
     now.srag.pred.zoo <- window(lista.srag$now.pred.zoo, start = dia.zero.srag)
     now.srag.proj.zoo <- window(now.srag.proj.zoo, start = dia.zero.srag)
     td.now.srag <- window(td.now.srag, start = dia.zero.srag)
+  } else {
+    now.srag.pred.zoo <- lista.srag$now.pred.zoo
   }
+  
   ## 2.5. Gera df para grafico ####
   df.srag <- formata.now.df(now.srag.pred.zoo, 
                             now.srag.proj.zoo,
@@ -105,6 +110,8 @@ if (existe.ob.covid) {
     now.ob.covid.pred.zoo <- window(lista.ob.covid$now.pred.zoo, start = dia.zero.ob.covid)
     now.ob.covid.proj.zoo  <- window(now.ob.covid.proj.zoo, start = dia.zero.ob.covid)
     td.now.ob.covid <- window(td.now.ob.covid, start = dia.zero.ob.covid)
+  } else {
+    now.ob.covid.pred.zoo <- lista.ob.covid$now.pred.zoo
   }
   
   ## 3.4. Gera df para grafico ####
@@ -137,6 +144,8 @@ if (existe.ob.srag) {
     now.ob.srag.pred.zoo <- window(lista.ob.srag$now.pred.zoo, start = dia.zero.ob.srag)
     now.ob.srag.proj.zoo  <- window(now.ob.srag.proj.zoo, start = dia.zero.ob.srag)
     td.now.ob.srag <- window(td.now.ob.srag, start = dia.zero.ob.srag)
+  } else {
+    now.ob.srag.pred.zoo <- lista.ob.srag$now.pred.zoo
   }
   
   ## 4.4. Gera df para grafico
