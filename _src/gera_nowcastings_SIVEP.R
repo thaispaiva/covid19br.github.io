@@ -14,6 +14,7 @@ library(NobBS)
 ################################################################################
 ## Parsing command line arguments
 ################################################################################
+if (sys.nframe() == 0L) {
 option_list <- list(
     make_option("--file",
                 help = ("Arquivo csv com base sivep gripe"),
@@ -51,7 +52,7 @@ window <- opt$options$window
 trim.now <- opt$options$trim
 formato.data <- opt$options$formatoData
 update.git <- opt$options$updateGit
-
+}
 ################################################################################
 ### to run INTERACTIVELY: START HERE
 ################################################################################
@@ -217,7 +218,7 @@ n.data.obitos.srag  <-
 ## nomes dos objetos e seus paths
 
 output_folder <- paste0("../dados/estado_", estado, "/")
-dir.create(output.folder, showWarnings = FALSE)
+dir.create(output_folder, showWarnings = FALSE)
 
 ##COVID##
 ##nome.now <- paste0(output_folder, "nowcasting_covid_",format(data.base,"%Y_%m_%d"),".rds")
