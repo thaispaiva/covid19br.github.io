@@ -45,7 +45,7 @@ sigla.adm <- opt$options$sigla
 
 #if you are going to run this interactively uncomment: 
 # adm <- "estado"
-# sigla.adm <- "RJ"
+# sigla.adm <- "SP"
 
 if (!exists('sigla.adm')) {
   print("Sigla do estado não definida")
@@ -94,26 +94,35 @@ close(file)
 ################################################################################
 print("Atualizando plots...")
 
-# lista das funcoes de plot
-nomes.fct.plot <- c("plot.formatos", 
-                    "plot.nowcast.diario", 
-                    "plot.nowcast.acumulado",
-                    "plot.estimate.R0",
-                    "plot.tempo.dupl")
-
-# lista os plots gerados
-all.plots <- ls(pattern = "^plot.") # tudo que comeca com plot
-real.plots <- all.plots[!all.plots %in% nomes.fct.plot] # so o que é grafico mesmo
-
 # Graficos a serem atualizados
 plots.para.atualizar <- makeNamedList(
-  lapply(real.plots, get)
-) 
+  # covid
+  plot.nowcast.covid,
+  plot.nowcast.cum.covid,
+  plot.estimate.R0.covid,
+  plot.tempo.dupl.covid, 
+  # srag
+  plot.nowcast.srag,
+  plot.nowcast.cum.srag,
+  plot.estimate.R0.srag,
+  plot.tempo.dupl.srag,
+  # obitos covid
+  plot.nowcast.ob.covid,
+  plot.nowcast.cum.ob.covid,
+  plot.tempo.dupl.ob.covid,
+  # obitos covid
+  plot.nowcast.ob.srag,
+  plot.nowcast.cum.ob.srag,
+  plot.tempo.dupl.ob.srag
+)
+
+# pegando apenas os plots que existem mesmo
+plots.true <- sapply(plots.para.atualizar, function(x) !is.null(x))
 
 filenames <- names(plots.para.atualizar)
-n <- length(plots.para.atualizar)
+n <- 1:length(plots.para.atualizar)
 
-for (i in 1:n) {
+for (i in n[plots.true]) {
   fig.name <- paste0(filenames[i],".", tolower(sigla.adm))
   graph.html <- ggplotly(plots.para.atualizar[[i]]) %>%
     layout(margin = list(l = 50, r = 20, b = 20, t = 20, pad = 4))
