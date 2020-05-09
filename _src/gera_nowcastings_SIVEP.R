@@ -65,6 +65,7 @@ update.git <- opt$options$updateGit
 ## nome <- "SRAGHospitalizado_2020_05_04.csv"
 ## data <- "NULL"
 ## estado <- "DF"
+## sigla <- "DF"
 ## window <- 40
 ## trim.now <- 2
 ## formato.data <- "%d/%m/%Y"
@@ -79,12 +80,12 @@ if (data == "NULL")
 if (data != "NULL")
     data.base <- as.Date(data)
 ## Importa csv. Ad hoc intencional para quebrar se mudar estrutura de diretorios
-dados <- read.csv2(paste0("../dados/SIVEP-Gripe/", nome), as.is=TRUE)
+dados <- read.csv2(paste0("../dados/SIVEP-Gripe/", nome), as.is = TRUE)
 ## Conveninencia, nomes das variaveis em minusculas
 names(dados) <- tolower(names(dados))
 ## Coversao dos campos de datas em datas
 dt.cols <- names(dados)[grepl("dt_", names(dados))]
-dados[,dt.cols] <- lapply(dados[,dt.cols], function(x) as.Date(x, formato.data))
+dados[,dt.cols] <- lapply(dados[, dt.cols], function(x) as.Date(x, formato.data))
 
 # fonte: IBGE (https://www.ibge.gov.br/geociencias/organizacao-do-territorio/divisao-regional/15778-divisoes-regionais-do-brasil.html?=&t=acesso-ao-produto)
 regioes.ibge <- as.data.frame(read_xls('../dados/regioes_geograficas_composicao_por_municipios_2017_20180911.xls'))
@@ -103,29 +104,29 @@ if (update.git)
 ## pois o nowcasting retorna tabela de n de casos por data do 1o sintoma
 
 ## filtra por cidade/estado/região
-if (adm == "estado"){
+if (adm == "estado") {
     dados.f <- filter(dados, sg_uf == sigla)
-} else if (adm == "municipio"){
+} else if (adm == "municipio") {
     dados.f <- filter(dados, co_mun_res == sigla)
-} else if (adm == "micro"){
+} else if (adm == "micro") {
     co.muns <- regioes.ibge %>%
         filter(cod_rgi == sigla) %>%
         mutate(CD_GEOCODI = as.numeric(substr(CD_GEOCODI, 1, nchar(CD_GEOCODI)-1))) %>%
         .$CD_GEOCODI
     if(length(co.muns) == 0){
         print("Código da microrregião inexistente")
-        quit(status=1)
+        quit(status = 1)
     }
     dados.f <- filter(dados, co_mun_res %in% co.muns)
 
-} else if (adm == "meso"){
+} else if (adm == "meso") {
     co.muns <- regioes.ibge %>%
         filter(cod_rgint == sigla) %>%
-        mutate(CD_GEOCODI = as.numeric(substr(CD_GEOCODI, 1, nchar(CD_GEOCODI)-1))) %>%
+        mutate(CD_GEOCODI = as.numeric(substr(CD_GEOCODI, 1, nchar(CD_GEOCODI) - 1))) %>%
         .$CD_GEOCODI
-    if(length(co.muns) == 0){
+    if (length(co.muns) == 0) {
         print("Código da mesorregião inexistente")
-        quit(status=1)
+        quit(status = 1)
     }
     dados.f <- filter(dados, co_mun_res %in% co.muns)
 } else if (adm == "pais"){
@@ -195,6 +196,7 @@ now.obitos.covid <- NobBS(
     moving_window = window,
     specs = list(beta.priors = dbinom(0:40, size = 40, p = 15/50)))
 }
+
 ##obitos SRAG##
 if (nrow(dados2.obitos_srag) != 0) {
 now.obitos.srag <- NobBS(
