@@ -110,7 +110,7 @@ plots.para.atualizar <- makeNamedList(
   plot.nowcast.ob.covid,
   plot.nowcast.cum.ob.covid,
   plot.tempo.dupl.ob.covid,
-  # obitos covid
+  # obitos srag
   plot.nowcast.ob.srag,
   plot.nowcast.cum.ob.srag,
   plot.tempo.dupl.ob.srag
