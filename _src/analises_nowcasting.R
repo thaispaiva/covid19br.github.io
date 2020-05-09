@@ -94,6 +94,14 @@ if (existe.srag) {
                              lista.srag)
   df.srag.diario <- df.srag$diario
   df.srag.cum <- df.srag$acumulado
+  # salva o df em csv apenas para municipio SP por enquanto
+  if (adm == "municipio" & sigla.adm == "SP") {
+    df.path <- paste0("../dados/", adm, "_", sigla.adm, "/tabelas_nowcasting_para_grafico/")
+    if (!dir.exists(df.path)) dir.create(df.path)
+    write.csv(file = df.srag.cum, 
+              file.name = paste0("nowcasting_acumulado_srag_", data.base, ".csv"), 
+              row.names = FALSE)
+  }
 }
 
 ######################
