@@ -2,6 +2,7 @@ library(optparse)
 library(foreign)
 library(dplyr)
 library(NobBS)
+library(readxl)
 
 ################################################################################
 ## 1. Leitura de arquivo  do sivep gripe no diretorio SIVEP-Gripe
@@ -19,6 +20,9 @@ option_list <- list(
     make_option("--file",
                 help = ("Arquivo csv com base sivep gripe"),
                 metavar = "file"),
+    make_option("--adm", default = "estado",
+                help = ("nível administrativo, um de: municipio, micro, meso, estado, pais"),
+                metavar = "adm"),
     make_option("--estado",
                 help = ("Sigla do estado"),
                 metavar = "estado"),
@@ -46,7 +50,8 @@ parser_object <- OptionParser(usage = "Rscript %prog [Opções] [ARQUIVO]\n",
 ## aliases
 opt <- parse_args(parser_object, args = commandArgs(trailingOnly = TRUE), positional_arguments = TRUE)
 nome <- opt$options$file
-estado <- opt$options$estado
+adm <- opt$options$adm
+sigla <- opt$options$estado
 data <- opt$options$dataBase
 window <- opt$options$window
 trim.now <- opt$options$trim
@@ -81,10 +86,14 @@ names(dados) <- tolower(names(dados))
 dt.cols <- names(dados)[grepl("dt_", names(dados))]
 dados[,dt.cols] <- lapply(dados[,dt.cols], function(x) as.Date(x, formato.data))
 
+# fonte: IBGE (https://www.ibge.gov.br/geociencias/organizacao-do-territorio/divisao-regional/15778-divisoes-regionais-do-brasil.html?=&t=acesso-ao-produto)
+regioes.ibge <- as.data.frame(read_xls('../dados/regioes_geograficas_composicao_por_municipios_2017_20180911.xls'))
+
 ################################################################################
 ## comandos git: PULL ANTES de adicionar arquivos
 ################################################################################
-system("git pull")
+if (update.git)
+    system("git pull")
 
 ################################################################################
 ## Nowcastings
@@ -93,31 +102,60 @@ system("git pull")
 ## Guarda data de notificação também para gerar a tabela de n de notificaoes por data
 ## pois o nowcasting retorna tabela de n de casos por data do 1o sintoma
 
+## filtra por cidade/estado/região
+if (adm == "estado"){
+    dados.f <- filter(dados, sg_uf == sigla)
+} else if (adm == "municipio"){
+    dados.f <- filter(dados, co_mun_res == sigla)
+} else if (adm == "micro"){
+    co.muns <- regioes.ibge %>%
+        filter(cod_rgi == sigla) %>%
+        mutate(CD_GEOCODI = as.numeric(substr(CD_GEOCODI, 1, nchar(CD_GEOCODI)-1))) %>%
+        .$CD_GEOCODI
+    if(length(co.muns) == 0){
+        print("Código da microrregião inexistente")
+        quit(status=1)
+    }
+    dados.f <- filter(dados, co_mun_res %in% co.muns)
+
+} else if (adm == "meso"){
+    co.muns <- regioes.ibge %>%
+        filter(cod_rgint == sigla) %>%
+        mutate(CD_GEOCODI = as.numeric(substr(CD_GEOCODI, 1, nchar(CD_GEOCODI)-1))) %>%
+        .$CD_GEOCODI
+    if(length(co.muns) == 0){
+        print("Código da mesorregião inexistente")
+        quit(status=1)
+    }
+    dados.f <- filter(dados, co_mun_res %in% co.muns)
+} else if (adm == "pais"){
+    dados.f <- dados
+}
+
 ## Cria objetos com dados
 ##COVID##
 dados2 <-
-    dados %>%
-    filter(pcr_sars2 == 1 & sg_uf == estado) %>%
+    dados.f %>%
+    filter(pcr_sars2 == 1) %>%
     select(dt_notific, dt_sin_pri, dt_pcr, dt_digita) %>%
     mutate(dt_pcr_dig = pmax(dt_pcr, dt_digita, dt_notific, na.rm = TRUE))
 ##SRAG##
 dados2.srag <-
-    dados %>%
-    filter(sg_uf == estado) %>%
+    dados.f %>%
     select(dt_notific, dt_sin_pri, dt_pcr, dt_digita) %>%
     mutate(dt_pcr_dig = pmax(dt_pcr, dt_digita, dt_notific, na.rm = TRUE))
 ##obitos COVID##
 dados2.obitos_covid <-
-    dados %>%
-    filter(pcr_sars2 == 1 & evolucao == 2 & sg_uf == estado) %>%
+    dados.f %>%
+    filter(pcr_sars2 == 1 & evolucao == 2) %>%
     filter(!is.na(dt_evoluca)) %>%
     mutate(dt_encerra = pmax(dt_encerra, dt_digita, dt_evoluca,
                              na.rm = TRUE)) %>%
     select(dt_evoluca, dt_notific, dt_encerra)
 ##Obitos SRAG##
 dados2.obitos_srag <-
-    dados %>%
-    filter(evolucao == 2 & sg_uf == estado) %>%
+    dados.f %>%
+    filter(evolucao == 2) %>%
     filter(!is.na(dt_evoluca)) %>%
     mutate(dt_encerra = pmax(dt_encerra, dt_digita, dt_evoluca,
                              na.rm = TRUE)) %>%
@@ -217,7 +255,7 @@ n.data.obitos.srag  <-
 ################################################################################
 ## nomes dos objetos e seus paths
 
-output_folder <- paste0("../dados/estado_", estado, "/")
+output_folder <- paste0("../dados/", adm, "_", sigla, "/")
 dir.create(output_folder, showWarnings = FALSE)
 
 ##COVID##
@@ -340,7 +378,7 @@ if (update.git) {#ast isto é segurança para a gente por enquanto, pode sair de
     system(paste("git add", nome.now.ob.covid, nome.now.df.ob.covid, nome.not.ob.covid, nome.data.ob.covid))
     ##obitos srag##
     system(paste("git add", nome.now.ob.srag, nome.now.df.ob.srag, nome.not.ob.srag, nome.data.ob.srag))
-    system(paste0("git commit -m '[auto] atualizacao automatica nowcasting estado ", estado, "' &&
+    system(paste0("git commit -m '[auto] atualizacao automatica nowcasting estado ", sigla, "' &&
        git push origin master"))
 }
 
