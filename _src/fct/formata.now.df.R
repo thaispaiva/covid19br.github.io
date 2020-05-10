@@ -49,7 +49,8 @@ formata.now.df <- function(now.pred.zoo,
     df.cum <- full_join(df.cum1, 
                         df.cum2) %>%
         select(select.cols) %>%
-        mutate(data = as.Date(data))
+        mutate(data = as.Date(data)) %>%
+        mutate_all(funs(round(., 0)))
     lista.plot <- list(diario = df.diario, acumulado = df.cum)
     return(lista.plot)
 }
