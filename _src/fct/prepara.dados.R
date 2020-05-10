@@ -11,7 +11,7 @@
 prepara.dados <- function(tipo = "covid", 
                           adm,
                           sigla.adm,
-                          data.base) { # tipos possiveis: covid, srag, obitos_covid e obitos_srag
+                          data.base = data.base) { # tipos possiveis: covid, srag, obitos_covid e obitos_srag
     casos <- c("covid", "srag")
     obitos <- c("obitos_covid", "obitos_srag")
     if (adm == "municipio") {
@@ -21,11 +21,7 @@ prepara.dados <- function(tipo = "covid",
     }
     nome.dir <- paste0("../dados/", adm, "_", sigla.adm, "/")
     if (missing(data.base))
-    data.base <- dir(nome.dir, pattern = paste0("nowcasting", ".+", tipo,".+", "_20")) %>% 
-        stringr::str_extract("(19|20)\\d\\d[_ /.](0[1-9]|1[012])[_ /.](0[1-9]|[12][0-9]|3[01])") %>% #prfct
-        as.Date(format = "%Y_%m_%d") %>%
-        max() %>%
-        format("%Y_%m_%d")
+    data.base <- get.data.base(adm = adm, sigla.adm = sigla.adm, tipo = tipo)
     
     
     ## Importa dados em objetos de séries temporais (zoo)
@@ -35,16 +31,12 @@ prepara.dados <- function(tipo = "covid",
     #rename columns forever to unify the analyses
     # srm: colocando tambem condicao para definir no nome em n.sintoma
     if (tipo %in% casos) {
-        n.notificados <- n.notificados %>%
-            rename(dt_col = "dt_notific")
         nome.sint <- "n_casos_data_sintoma_"
     }
     if (tipo %in% obitos) {
-        n.notificados <- n.notificados %>% 
-            rename(dt_col = "dt_notific") #ast aqui é notific mesmo PI explicou
         nome.sint <- "n_casos_data_"
     }
-    n.notificados.zoo <- with(n.notificados, zoo(n.notific, as.Date(dt_col)))#%ast aqui estou usando a renomeada
+    n.notificados.zoo <- with(n.notificados, zoo(n.notific, as.Date(dt_notific)))
     
     ## Previsoes de nowcasting e n de casos por data de inicio do sintoma %ast aqui não precisa mudar porque tudo é onset_date
     now.pred.original <- read.csv(paste0(nome.dir, "nowcasting_", tipo, "_previstos_", data.base, ".csv"))

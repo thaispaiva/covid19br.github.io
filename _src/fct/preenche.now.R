@@ -9,8 +9,11 @@
 #'     nowcasting, com NAs nas datas para as quais não há estimativas.
 #' @param vetor.casos vetor com numero de casos o observados. Deve ter
 #'     mesmo comprimento de 'vetor.now'
-preenche.now <- function(vetor.now, vetor.casos){
-    index <- max(which(is.na(vetor.now), arr.ind=TRUE))
+preenche.now <- function(vetor.now, vetor.casos) {
+  if (any(is.na(vetor.now))) {
+    index <- max(which(is.na(vetor.now), arr.ind = TRUE))
     vetor.now[1:index] <- vetor.casos[1:index]
+  }
     return(vetor.now)
 }
+

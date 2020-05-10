@@ -3,7 +3,7 @@ library(EpiEstim)
 
 # carraga funcoes em fct, listagem em ordem alfabetica
 source("fct/beta.summary.R")
-source("fct/data.base.R")
+source("fct/get.data.base.R")
 source("fct/diazero.R")
 source("fct/dt.rw.R")
 source("fct/estima.not.R")

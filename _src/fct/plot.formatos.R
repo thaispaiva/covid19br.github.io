@@ -1,3 +1,4 @@
+library(ggplot2)
 plot.formatos <- theme_bw() +
     theme(axis.text = element_text(size = 10, face = "bold"),
           axis.title = element_text(size = 10, face = "bold"),
