@@ -136,31 +136,35 @@ if (adm == "estado") {
 ## Cria objetos com dados
 ##COVID##
 dados2 <-
-    dados.f %>%
-    filter(pcr_sars2 == 1) %>%
-    select(dt_notific, dt_sin_pri, dt_pcr, dt_digita) %>%
-    mutate(dt_pcr_dig = pmax(dt_pcr, dt_digita, dt_notific, na.rm = TRUE))
+  dados.f %>%
+  filter(pcr_sars2 == 1 | classi_fin == 5) %>% #covid com nova classificacao
+  filter(hospital == 1) %>% # so hospitalizados
+  select(dt_notific, dt_sin_pri, dt_pcr, dt_digita) %>%
+  mutate(dt_pcr_dig = pmax(dt_pcr, dt_digita, dt_notific, na.rm = TRUE))
 ##SRAG##
+## %PIP data de registro é data mais recente entre notificação e digitação, não deve incluir data pcr (dt_pcr)
+## pq SRAG não precisa de teste para ser confirmado
 dados2.srag <-
-    dados.f %>%
-    select(dt_notific, dt_sin_pri, dt_pcr, dt_digita) %>%
-    mutate(dt_pcr_dig = pmax(dt_pcr, dt_digita, dt_notific, na.rm = TRUE))
+  dados.f %>%
+  select(dt_notific, dt_sin_pri, dt_digita) %>%
+  mutate(dt_pcr_dig = pmax(dt_pcr, dt_digita, dt_notific, na.rm = TRUE))
 ##obitos COVID##
 dados2.obitos_covid <-
-    dados.f %>%
-    filter(pcr_sars2 == 1 & evolucao == 2) %>%
-    filter(!is.na(dt_evoluca)) %>%
-    mutate(dt_encerra = pmax(dt_encerra, dt_digita, dt_evoluca,
-                             na.rm = TRUE)) %>%
-    select(dt_evoluca, dt_notific, dt_encerra)
+  dados.f %>%
+  filter(pcr_sars2 == 1 | classi_fin == 5) %>% # covid com nova classificacao
+  filter(hospital == 1 & evolucao == 2) %>% # so hospitalizados que vieram a obito
+  filter(!is.na(dt_evoluca)) %>%
+  mutate(dt_encerra = pmax(dt_encerra, dt_digita, dt_evoluca,
+                           na.rm = TRUE)) %>%
+  select(dt_evoluca, dt_notific, dt_encerra)
 ##Obitos SRAG##
 dados2.obitos_srag <-
-    dados.f %>%
-    filter(evolucao == 2) %>%
-    filter(!is.na(dt_evoluca)) %>%
-    mutate(dt_encerra = pmax(dt_encerra, dt_digita, dt_evoluca,
-                             na.rm = TRUE)) %>%
-    select(dt_evoluca, dt_notific, dt_encerra)
+  dados.f %>%
+  filter(evolucao == 2) %>%
+  filter(!is.na(dt_evoluca)) %>%
+  mutate(dt_encerra = pmax(dt_encerra, dt_digita, dt_evoluca,
+                           na.rm = TRUE)) %>%
+  select(dt_evoluca, dt_notific, dt_encerra)
 
 ## Executa nowcasting diario
 ##COVID##
