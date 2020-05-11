@@ -35,4 +35,4 @@ Para compor a curva média de casos estimados por *nowcasting*, por exemplo, usa
  <img src="https://raw.githubusercontent.com/covid19br/covid19br.github.io/grafico_nowcasting/web/municipio_SP/plot.nowcast.cum.srag.sp.svg" width="350">
 </p>
 
-À esquerda valores notificados e corrigidos (nowcasting) de COVID-19 no município de São Paulo. As linhas contínuas representam os valores notificados e corrigidos (nowcasting). As linhas tracejadas representam suas projeções para os próximos cinco dias e, em cinza, seus intervalos de credibilidade. À direita, o mesmo para SRAG.
+À esquerda valores notificados e estimados (nowcasting) de COVID-19 no município de São Paulo. As linhas contínuas representam os valores motificados e estimados (nowcasting). As linhas tracejadas representam suas projeções para os próximos cinco dias e, em cinza, seus intervalos de credibilidade. À direita, o mesmo para SRAG.
