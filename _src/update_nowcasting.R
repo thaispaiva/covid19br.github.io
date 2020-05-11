@@ -22,12 +22,18 @@ makeNamedList <- function(...) {
 if (sys.nframe() == 0L) {
   # Parsing command line arguments
   option_list <- list(
-    make_option("--estado", default = "estado",
+    make_option("--escala", default = "municipio",
                 help = ("Selecione uma escala administrativa: estado, municipio"),
-                metavar = "estado"),
-    make_option("--sigla", default = "NULL",
+                metavar = "escala"),
+    make_option("--sigla", default = "SP",
                 help = ("Estado a ser atualizado"),
-                metavar = "sigla")
+                metavar = "sigla"),
+    make_option("--dataBase", default = "NULL",
+                help = ("Data da base de dados, formato 'yyyy-mm-dd'"),
+                metavar = "dataBase"),
+    make_option("--formatoData", default = "%Y-%m-%d",
+                help = ("Formato do campo de datas no csv, confome padrão da função as.Date"),
+                metavar = "formatoData")
   )
   #ö checar os detalles do parse usage aqui
   parser_object <- OptionParser(usage = "Rscript %prog [Opções] [sigla UF]\n",
@@ -38,15 +44,17 @@ if (sys.nframe() == 0L) {
                     positional_arguments = TRUE)
   
   ## aliases
-adm <- opt$options$estado
+adm <- opt$options$escala
 sigla.adm <- opt$options$sigla
+data.base <- opt$options$dataBase
+formato.data <- opt$options$formatoData
 #ö: isto ficou assim porque municipio SP ainda está independente o terminal vai perguntar estado e sigla. mas isso não muda a parametrizaçãõ de adm e sigla.adm
 }
 
 #if you are going to run this interactively uncomment: 
-# adm <- "estado"
-# sigla.adm <- "SP"
-
+#adm <- "municipio"
+#sigla.adm <- "SP"
+#data.base <- "2020-04-25"
 if (!exists('sigla.adm')) {
   print("Sigla do estado não definida")
   quit(status = 1)
