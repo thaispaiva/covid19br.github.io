@@ -54,6 +54,6 @@ if [[ $novos_dados = 0 && ! -f "../dados/Estado_SP/$out" ]]; then
     git push
 
     for estado in $estados; do
-        run_with_lock Rscript update_nowcasting.R --estado estado --sigla $estado
+        run_with_lock Rscript update_nowcasting.R --escala estado --sigla $estado
     done
 fi
