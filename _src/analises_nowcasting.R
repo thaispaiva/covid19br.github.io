@@ -1,8 +1,6 @@
 library(dplyr)
 source("funcoes.R")
 
-
-
 ###############
 # 1. COVID ####
 ###############
@@ -43,14 +41,21 @@ if (existe.covid) {
                              lista.covid)
   df.covid.diario <- df.covid$diario
   df.covid.cum <- df.covid$acumulado
-  # salva o df em csv apenas para municipio SP por enquanto
-  if (adm == "municipio" & sigla.adm == "SP") {
-    df.path <- paste0("../dados/", adm, "_", sigla.adm, "/tabelas_nowcasting_para_grafico/")
-    if (!dir.exists(df.path)) dir.create(df.path)
-    write.csv(df.covid.cum, 
-              paste0(df.path, "nowcasting_acumulado_covid_", data.covid, ".csv"), 
-              row.names = FALSE)
-  }
+  # salva o df em csv 
+  df.path <- paste0("../dados/", adm, "_", sigla.adm, "/tabelas_nowcasting_para_grafico/")
+  if (!dir.exists(df.path)) dir.create(df.path)
+  write.csv(df.covid.cum, 
+            paste0(df.path, "nowcasting_acumulado_covid_", data.covid, ".csv"), 
+            row.names = FALSE)
+  write.csv(df.covid.diario, 
+            paste0(df.path, "nowcasting_diario_covid_", data.covid, ".csv"), 
+            row.names = FALSE)
+  write.csv(zoo2df(td.now), 
+            paste0(df.path, "tempo_duplicacao_covid_", data.covid, ".csv"), 
+            row.names = FALSE)
+  write.csv(zoo2df(Re.now.zoo), 
+            paste0(df.path, "r_efetivo_covid_", data.covid, ".csv"), 
+            row.names = FALSE)
 }
 
 
@@ -94,14 +99,21 @@ if (existe.srag) {
                             lista.srag)
   df.srag.diario <- df.srag$diario
   df.srag.cum <- df.srag$acumulado
-  # salva o df em csv apenas para municipio SP por enquanto
-  if (adm == "municipio" & sigla.adm == "SP") {
-    df.path <- paste0("../dados/", adm, "_", sigla.adm, "/tabelas_nowcasting_para_grafico/")
-    if (!dir.exists(df.path)) dir.create(df.path)
-    write.csv(df.srag.cum, 
-              paste0(df.path, "nowcasting_acumulado_srag_", data.srag, ".csv"), 
-              row.names = FALSE)
-  }
+  # salva o df em csv
+  df.path <- paste0("../dados/", adm, "_", sigla.adm, "/tabelas_nowcasting_para_grafico/")
+  if (!dir.exists(df.path)) dir.create(df.path)
+  write.csv(df.srag.cum, 
+            paste0(df.path, "nowcasting_acumulado_srag_", data.srag, ".csv"), 
+            row.names = FALSE)
+  write.csv(df.srag.diario, 
+            paste0(df.path, "nowcasting_diario_srag_", data.srag, ".csv"), 
+            row.names = FALSE)
+  write.csv(zoo2df(td.now.srag), 
+            paste0(df.path, "tempo_duplicacao_srag_", data.srag, ".csv"), 
+            row.names = FALSE)
+  write.csv(zoo2df(Re.now.srag.zoo), 
+            paste0(df.path, "r_efetivo_srag_", data.srag, ".csv"), 
+            row.names = FALSE)
 }
 
 ######################

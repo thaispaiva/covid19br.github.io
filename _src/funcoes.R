@@ -18,6 +18,7 @@ source("fct/now.proj.R")
 source("fct/preenche.now.R")
 source("fct/prepara.dados.R")
 source("fct/Re.com.data.R")
+source("fct/zoo2df.R")
 
 # formatacao e funcoes de plot
 source("fct/plot.formatos.R")
