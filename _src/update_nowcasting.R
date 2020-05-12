@@ -55,6 +55,7 @@ formato.data <- opt$options$formatoData
 #adm <- "municipio"
 #sigla.adm <- "SP"
 #data.base <- "2020-04-25"
+#formato.data <- "%Y-%m-%d"
 if (!exists('sigla.adm')) {
   print("Sigla do estado não definida")
   quit(status = 1)
