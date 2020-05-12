@@ -1,6 +1,7 @@
 # Funcao para fazer plot nowcast de casos diarios (notificado e nowcasting), com linha de tendencia atenuada e IC
 plot.nowcast.diario <- function(df) {
     plot <- df %>%
+        mutate(data = as.Date(data)) %>%
         ggplot(aes(x = data)) +
         geom_line(aes(y = estimate.merged), lty = 2, col = "grey") +
         geom_point(aes(y = n.casos, col = "Notificado"), size = 2) +

@@ -1,6 +1,7 @@
 # Funcao para fazer o plot de nowcasting acumulado, com valores estimados e notificados, com projecao para os proximos 5 dias
 plot.nowcast.acumulado <- function(df){
     plot <- df %>%
+        mutate(data = as.Date(data)) %>% 
         ggplot(aes(x = data)) +
         # linha e ponto
         geom_line(aes(y = now.mean.c, color = "Estimados"), size = 1) +

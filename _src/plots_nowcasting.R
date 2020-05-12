@@ -2,7 +2,6 @@
 library(ggplot2)
 library(dplyr)
 library(tidyr)
-library(zoo)
 
 # Parametros de formatacao comum aos plots
 source("funcoes.R") # plot.formatos vem junto aqui
@@ -13,6 +12,12 @@ data.dir <- paste0("../dados/", adm, "_", sigla.adm, "/", "tabelas_nowcasting_pa
 output.dir <- paste0("../web/", adm, "_", sigla.adm, "/") 
 
 if (!dir.exists(output.dir)) dir.create(output.dir)
+
+# testando se existe nowcasting
+existe.covid <- existe.nowcasting2(adm = adm, sigla.adm = sigla.adm, tipo = "covid")
+existe.srag <- existe.nowcasting2(adm = adm, sigla.adm = sigla.adm, tipo = "srag")
+existe.ob.covid <- existe.nowcasting2(adm = adm, sigla.adm = sigla.adm, tipo = "obitos_covid")
+existe.ob.srag <- existe.nowcasting2(adm = adm, sigla.adm = sigla.adm, tipo = "obitos_srag")
 
 #############
 ## COVID ####
@@ -116,7 +121,7 @@ if (existe.ob.covid) {
         ylab("Número acumulado de óbitos")
     
     ### tempo de duplicação
-    plot.tempo.dupl.ob.covid <- plot.tempo.dupl(td.now.ob.covid)
+    plot.tempo.dupl.ob.covid <- plot.tempo.dupl(df.td.ob.covid)
     
     # TABELAS ####
     tabelas.web(sigla.adm, 
@@ -136,9 +141,9 @@ if (existe.ob.covid) {
 
 if (existe.ob.srag) {
     data.ob.srag <- get.data.base2(adm, sigla.adm, "obitos_srag")
-    df.ob.srag.diario <- read.csv(paste0(data.dir, "nowcasting_diario_obitos_covid_", data.ob.srag, ".csv"))
-    df.ob.srag.cum <- read.csv(paste0(data.dir, "nowcasting_acumulado_obitos_covid_", data.ob.srag, ".csv"))
-    df.td.ob.srag <- read.csv(paste0(data.dir, "tempo_duplicacao_obitos_covid_", data.ob.srag, ".csv"))
+    df.ob.srag.diario <- read.csv(paste0(data.dir, "nowcasting_diario_obitos_srag_", data.ob.srag, ".csv"))
+    df.ob.srag.cum <- read.csv(paste0(data.dir, "nowcasting_acumulado_obitos_srag_", data.ob.srag, ".csv"))
+    df.td.ob.srag <- read.csv(paste0(data.dir, "tempo_duplicacao_obitos_srag_", data.ob.srag, ".csv"))
     ### diario
     ## N de novos casos observados e por nowcasting
     ## Com linha de média móvel
@@ -152,7 +157,7 @@ if (existe.ob.srag) {
         ylab("Número acumulado de óbitos")
     
     ### tempo de duplicação
-    plot.tempo.dupl.ob.srag <- plot.tempo.dupl(td.now.ob.srag)
+    plot.tempo.dupl.ob.srag <- plot.tempo.dupl(df.td.ob.srag)
     # TABELAS ####
     tabelas.web(sigla.adm, 
                 output.dir, 
