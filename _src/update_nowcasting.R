@@ -139,7 +139,10 @@ for (i in n[plots.true]) {
           # ticks
           axis.title = element_text(size = 14, family = "Arial", face = "plain")) # title
   with_dir(web.path, 
-           saveWidget(frameableWidget(graph.html), file = paste0(fig.name, ".html"), libdir = "./libs")) # HTML Interative Plot
+           saveWidget(frameableWidget(graph.html), 
+                      file = paste0(fig.name, ".html"),
+                      selfcontained = FALSE,
+                      libdir = "./libs")) # HTML Interative Plot
   ggsave(paste(web.path, fig.name, ".svg", sep = ""), 
          plot = graph.svg, device = svg, scale = .8, width = 210, height = 142, units = "mm")
 }
