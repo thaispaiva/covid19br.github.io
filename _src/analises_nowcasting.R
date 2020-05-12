@@ -148,6 +148,17 @@ if (existe.ob.covid) {
                                 lista.ob.covid)
   df.ob.covid.diario <- df.ob.covid$diario
   df.ob.covid.cum <- df.ob.covid$acumulado
+  df.path <- paste0("../dados/", adm, "_", sigla.adm, "/tabelas_nowcasting_para_grafico/")
+  if (!dir.exists(df.path)) dir.create(df.path)
+  write.csv(df.ob.covid.cum, 
+            paste0(df.path, "nowcasting_acumulado_obitos_covid_", data.ob.covid, ".csv"), 
+            row.names = FALSE)
+  write.csv(df.ob.covid.diario, 
+            paste0(df.path, "nowcasting_diario_obitos_covid_", data.ob.covid, ".csv"), 
+            row.names = FALSE)
+  write.csv(zoo2df(td.now.ob.covid), 
+            paste0(df.path, "tempo_duplicacao_obitos_covid_", data.ob.covid, ".csv"), 
+            row.names = FALSE)
 }
 
 #####################
@@ -182,6 +193,17 @@ if (existe.ob.srag) {
                                lista.ob.srag)
   df.ob.srag.diario <- df.ob.srag$diario
   df.ob.srag.cum <- df.ob.srag$acumulado
+  df.path <- paste0("../dados/", adm, "_", sigla.adm, "/tabelas_nowcasting_para_grafico/")
+  if (!dir.exists(df.path)) dir.create(df.path)
+  write.csv(df.ob.srag.cum, 
+            paste0(df.path, "nowcasting_acumulado_obitos_srag_", data.ob.srag, ".csv"), 
+            row.names = FALSE)
+  write.csv(df.ob.srag.diario, 
+            paste0(df.path, "nowcasting_diario_obitos_srag_", data.ob.srag, ".csv"), 
+            row.names = FALSE)
+  write.csv(zoo2df(td.now.ob.srag), 
+            paste0(df.path, "tempo_duplicacao_obitos_srag_", data.ob.srag, ".csv"), 
+            row.names = FALSE)
 }
 
   

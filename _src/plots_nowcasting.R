@@ -7,17 +7,24 @@ library(zoo)
 # Parametros de formatacao comum aos plots
 source("funcoes.R") # plot.formatos vem junto aqui
 
-# separando os outputs em subpastas yay!
-web.path <- paste0("../web/", adm, "_", sigla.adm, "/") 
+# dir para os ler os dados
+data.dir <- paste0("../dados/", adm, "_", sigla.adm, "/", "tabelas_nowcasting_para_grafico/")
+# dir para os outputs, separados em subpastas
+output.dir <- paste0("../web/", adm, "_", sigla.adm, "/") 
 
-if (!dir.exists(web.path)) dir.create(web.path)
+if (!dir.exists(output.dir)) dir.create(output.dir)
 
 #############
 ## COVID ####
 #############
 
 if (existe.covid) {
-    # PLOTS #### 
+    data.covid <- get.data.base2(adm, sigla.adm, "covid")
+    df.covid.diario <- read.csv(paste0(data.dir, "nowcasting_diario_covid_", data.covid, ".csv"))
+    df.covid.cum <- read.csv(paste0(data.dir, "nowcasting_acumulado_covid_", data.covid, ".csv"))
+    df.td.covid <- read.csv(paste0(data.dir, "tempo_duplicacao_covid_", data.covid, ".csv"))
+    df.re.covid <- read.csv(paste0(data.dir, "r_efetivo_covid_", data.covid, ".csv"))
+        # PLOTS #### 
     ### diario
     ## N de novos casos observados e por nowcasting
     ## Com linha de média móvel
@@ -27,40 +34,19 @@ if (existe.covid) {
     plot.nowcast.cum.covid <- plot.nowcast.acumulado(df.covid.cum)
     
     ### tempo de duplicação
-    plot.tempo.dupl.covid <- plot.tempo.dupl(td.now)
+    plot.tempo.dupl.covid <- plot.tempo.dupl(df.td.covid)
     
     ### R efetivo
-    plot.estimate.R0.covid <- plot.estimate.R0(Re.now.zoo)
+    plot.estimate.R0.covid <- plot.estimate.R0(df.re.covid)
     
     # TABELAS ####
-    ## Tabela que preenche o minimo e o maximo do nowcast
-    minmax.casos <- data.frame(row.names = sigla.adm)
-    min <- as.integer(now.proj.zoo[max(nrow(now.proj.zoo)), 2])
-    max <- as.integer(now.proj.zoo[max(nrow(now.proj.zoo)), 3])
-    data <- format(max(time(now.proj.zoo)), "%d/%m/%Y")
-    minmax.casos <- cbind(minmax.casos, min, max, data)
-    write.table(minmax.casos, 
-                file = paste0(web.path, "data_forecasr_exp_", adm, "_", tolower(sigla.adm), "_covid.csv"), 
-                row.names = TRUE, col.names = FALSE)
-    # Não é generico, é apenas para o municipio de sp. Tendo mais, tem que atualizar
-    
-    ## Tabela do tempo de duplicação
-    temp.dupl <- data.frame(row.names = sigla.adm)
-    min.dias <- as.vector(round(td.now[max(nrow(td.now)), 2], 1))
-    max.dias <- as.vector(round(td.now[max(nrow(td.now)), 3], 1))
-    temp.dupl <- cbind(temp.dupl, min.dias, max.dias)
-    write.table(temp.dupl, 
-                file = paste0(web.path, "data_tempo_dupli_", adm, "_", tolower(sigla.adm), "_covid.csv"), 
-                row.names = TRUE, col.names = FALSE)
-    
-    ## Tabela do Re
-    Re.covid <- data.frame(row.names = sigla.adm)
-    min <- as.factor(round(Re.now.zoo[nrow(Re.now.zoo), 5], 1))
-    max <- as.factor(round(Re.now.zoo[nrow(Re.now.zoo), 11], 1))
-    Re.covid <- cbind(Re.covid, min, max)
-    write.table(Re.covid, 
-                file = paste0(web.path, "data_Re_", adm, "_", tolower(sigla.adm), "_covid.csv"), 
-                row.names = TRUE, col.names = FALSE)
+    ## Tabela que preenche o minimo e o maximo do nowcast, tempo de duplicacao, e r efetivo
+    tabelas.web(sigla.adm, 
+                output.dir, 
+                tipo = "covid",
+                df.covid.cum, 
+                df.td.covid,
+                df.re.covid)
     
 } else {
     plot.nowcast.covid <- NULL
@@ -74,6 +60,11 @@ if (existe.covid) {
 ############
 
 if (existe.srag) {
+    data.srag <- get.data.base2(adm, sigla.adm, "srag")
+    df.srag.diario <- read.csv(paste0(data.dir, "nowcasting_diario_srag_", data.srag, ".csv"))
+    df.srag.cum <- read.csv(paste0(data.dir, "nowcasting_acumulado_srag_", data.srag, ".csv"))
+    df.td.srag <- read.csv(paste0(data.dir, "tempo_duplicacao_srag_", data.srag, ".csv"))
+    df.re.srag <- read.csv(paste0(data.dir, "r_efetivo_srag_", data.srag, ".csv"))
     # PLOTS ####
     ### diario
     ## N de novos casos observados e por nowcasting
@@ -84,44 +75,18 @@ if (existe.srag) {
     plot.nowcast.cum.srag <- plot.nowcast.acumulado(df.srag.cum)
     
     ### tempo de duplicação
-    plot.tempo.dupl.srag <- plot.tempo.dupl(td.now.srag)
+    plot.tempo.dupl.srag <- plot.tempo.dupl(df.td.srag)
     
     ### R efetivo
-    plot.estimate.R0.srag <- plot.estimate.R0(Re.now.srag.zoo)
+    plot.estimate.R0.srag <- plot.estimate.R0(df.re.srag)
     
     # TABELAS ####
-    
-    ## Tabela que preenche o minimo e o maximo do nowcast
-    minmax.casos.srag <- data.frame(row.names = sigla.adm)
-    min <- as.integer(now.srag.proj.zoo[max(nrow(now.srag.proj.zoo)), 2])
-    max <- as.integer(now.srag.proj.zoo[max(nrow(now.srag.proj.zoo)), 3])
-    data <- format(max(time(now.srag.proj.zoo)), "%d/%m/%Y")
-    minmax.casos.srag <- cbind(minmax.casos.srag,
-                               min, max, data)
-    write.table(minmax.casos.srag, 
-                file = paste0(web.path, "data_forecasr_exp_", adm, "_", tolower(sigla.adm), "_srag.csv"), 
-                row.names = TRUE, col.names = FALSE)
-    # Não é generico, é apenas para o municipio de sp. Tendo mais, tem que atualizar
-    
-    ## Tabela do tempo de duplicação
-    temp.dupl.srag <- data.frame(row.names = sigla.adm)
-    min.dias <- as.vector(round(td.now.srag[max(nrow(td.now.srag)) ,2], 1))
-    max.dias <- as.vector(round(td.now.srag[max(nrow(td.now.srag)), 3], 1))
-    temp.dupl.srag <- cbind(temp.dupl.srag, min.dias, max.dias)
-    write.table(temp.dupl.srag, 
-                file = paste0(web.path, "data_tempo_dupli_", adm, "_", tolower(sigla.adm), "_srag.csv"), 
-                row.names = TRUE, col.names = FALSE)
-    
-    
-    ## Tabela do Re
-    Re.srag <- data.frame(row.names = sigla.adm)
-    min <- as.factor(round(Re.now.srag.zoo[nrow(Re.now.srag.zoo), 5], 1))
-    max <- as.factor(round(Re.now.srag.zoo[nrow(Re.now.srag.zoo), 11], 1))
-    Re.srag <- cbind(Re.srag, min, max)
-    write.table(Re.srag, 
-                file = paste0(web.path, "data_Re_", adm, "_", tolower(sigla.adm), "_srag.csv"), 
-                row.names = TRUE, col.names = FALSE)
-    
+    tabelas.web(sigla.adm, 
+                output.dir, 
+                tipo = "srag",
+                df.srag.cum, 
+                df.td.srag,
+                df.re.srag)  
 } else {
     plot.nowcast.srag <- NULL
     plot.nowcast.cum.srag <- NULL
@@ -134,6 +99,10 @@ if (existe.srag) {
 #####################
 
 if (existe.ob.covid) {
+    data.ob.covid <- get.data.base2(adm, sigla.adm, "obitos_covid")
+    df.ob.covid.diario <- read.csv(paste0(data.dir, "nowcasting_diario_obitos_covid_", data.ob.covid, ".csv"))
+    df.ob.covid.cum <- read.csv(paste0(data.dir, "nowcasting_acumulado_obitos_covid_", data.ob.covid, ".csv"))
+    df.td.ob.covid <- read.csv(paste0(data.dir, "tempo_duplicacao_obitos_covid_", data.ob.covid, ".csv"))
     ### diario
     ## N de novos casos observados e por nowcasting
     ## Com linha de média móvel
@@ -148,6 +117,13 @@ if (existe.ob.covid) {
     
     ### tempo de duplicação
     plot.tempo.dupl.ob.covid <- plot.tempo.dupl(td.now.ob.covid)
+    
+    # TABELAS ####
+    tabelas.web(sigla.adm, 
+                output.dir, 
+                tipo = "obitos_covid",
+                df.ob.covid.cum, 
+                df.td.ob.covid)  
 } else {
     plot.nowcast.ob.covid <- NULL
     plot.nowcast.cum.ob.covid <- NULL
@@ -159,6 +135,10 @@ if (existe.ob.covid) {
 ####################
 
 if (existe.ob.srag) {
+    data.ob.srag <- get.data.base2(adm, sigla.adm, "obitos_srag")
+    df.ob.srag.diario <- read.csv(paste0(data.dir, "nowcasting_diario_obitos_covid_", data.ob.srag, ".csv"))
+    df.ob.srag.cum <- read.csv(paste0(data.dir, "nowcasting_acumulado_obitos_covid_", data.ob.srag, ".csv"))
+    df.td.ob.srag <- read.csv(paste0(data.dir, "tempo_duplicacao_obitos_covid_", data.ob.srag, ".csv"))
     ### diario
     ## N de novos casos observados e por nowcasting
     ## Com linha de média móvel
@@ -173,6 +153,12 @@ if (existe.ob.srag) {
     
     ### tempo de duplicação
     plot.tempo.dupl.ob.srag <- plot.tempo.dupl(td.now.ob.srag)
+    # TABELAS ####
+    tabelas.web(sigla.adm, 
+                output.dir, 
+                tipo = "obitos_srag",
+                df.ob.srag.cum, 
+                df.td.ob.srag)  
 } else {
     plot.nowcast.ob.srag <- NULL
     plot.nowcast.cum.ob.srag <- NULL
