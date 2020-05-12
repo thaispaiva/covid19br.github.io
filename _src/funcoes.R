@@ -3,7 +3,6 @@ library(EpiEstim)
 
 # carraga funcoes em fct, listagem em ordem alfabetica
 source("fct/beta.summary.R")
-source("fct/get.data.base.R")
 source("fct/diazero.R")
 source("fct/dt.rw.R")
 source("fct/estima.not.R")
@@ -12,12 +11,15 @@ source("fct/existe.nowcasting.R")
 source("fct/fitP.exp.R")
 source("fct/forecast.exponential.R")
 source("fct/formata.now.df.R")
+source("fct/get.data.base.R")
+source("fct/get.data.base2.R")
 source("fct/inv.logit.R")
 source("fct/na.zero.R")
 source("fct/now.proj.R")
 source("fct/preenche.now.R")
 source("fct/prepara.dados.R")
 source("fct/Re.com.data.R")
+source("fct/tabelas.web.R")
 source("fct/zoo2df.R")
 
 # formatacao e funcoes de plot
