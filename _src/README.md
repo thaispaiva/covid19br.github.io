@@ -1,34 +1,34 @@
-# Para gerar os gráficos de nowcasting
+# Para gerar as análises de _nowcasting_
 
-Os scripts rodam automaticamente a partir de `update_*.R`, mas para testar localmente seguir a ordem abaixo. Os `update_*` são os arquivos que salvam as figuras .svg e .html para o site. 
+## 0. Antes de fazer a análise
 
-## Município São Paulo
+- Os arquivos de _nowcasting_ devem ter sido gerados usando o script `gera_nowcastings_SIVEP.R`
 
-Automático a partir de update_municipio.R. Ainda aparte, mas no futuro próximo pode ser o mesmo fluxo dos estados.
-
-### Localmente
-
-1. `prepara_dados_municipio_SP.R` - lê arquivos .csv em dados/municipio_SP
-2. ``analises_municipio.R` - gera objetos com projeções, R, TD
-3. `plots_municipio.R` - exporta arquivos em web/
-
-### Em bash
+Num terminal de bash: 
 
 ```bash
-Rscript update_municipio.R --m SP
+Rscript gera_nowcastings_SIVEP.R --dataBase 2020-05-04 --file SRAGHospitalizado_2020_05_04.csv --escala [estado]
 ```
 
-## Estados (e outros municípios)
 
-Automático a partir de update_nowcasting.R
+# 1. Para gerar os gráficos de _nowcasting_ para cada estado e município 
 
-1. `prepara_nowcasting.R` - lê arquivos .csv em dados/estado_*
-2. `analises_nowcastng.R` - gera objetos com projeções, R, TD
-3. `plots_nowcasting.R` - exporta arquivos em web/estado_*
- 
-### Em bash
+Os scripts rodam automaticamente a partir de `update_nowcasting.R`.
+
+Em um terminal de bash a opção escala permite selecionar a escala de análise (estado, município) e a opção sigla permite indicar a sigla de duas letras de cada estado.
 
 ```bash
-Rscript update_nowcasting.R --estado estado --sigla TO
+Rscript update_nowcasting.R --escala municipio --sigla SP
+Rscript update_nowcasting.R --escala estado --sigla PB
 ```
+
+Para testar localmente, executar `update_nowcasting.R` que chama os scripts seguintes: 
+
+1. `prepara_nowcasting.R` - lê arquivos .csv em `dados/estado_*`
+2. `analises_nowcasting.R` - gera objetos com projeções, R, TD
+3. `plots_nowcasting.R` - exporta arquivos em `web/estado_*`
+
+`update_nowcasting.R` salva as figuras .svg e .html para o site em `/web`
+
+
  
