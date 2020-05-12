@@ -2,8 +2,8 @@
 existe.nowcasting <- function(adm = adm, 
                               sigla.adm = sigla.adm, 
                               tipo,
-                              data = data.base) { 
-  if (data == "NULL") {
+                              data = NULL) { 
+  if (is.null(data)) {
     data_file <- get.data.base(adm = adm, sigla.adm = sigla.adm, tipo = tipo)}
   else data_file <- as.Date(data, format = formato.data) %>%  format("%Y_%m_%d")
     nome.dir <- paste0("../dados/", adm, "_", sigla.adm, "/")
