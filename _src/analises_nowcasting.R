@@ -206,4 +206,49 @@ if (existe.ob.srag) {
             row.names = FALSE)
 }
 
+
+############################
+# 4. OBITOS SRAG PROAIM ####
+############################
+# so importa no caso do municipio SP
+
+if (existe.ob.srag.proaim) {
+  ## 4.1 projecao ####
+  now.ob.srag.proj.zoo.proaim <-  now.proj(pred = lista.ob.srag.proaim$now.pred.zoo, 
+                                           pred.original = lista.ob.srag.proaim$now.pred.original, 
+                                           now.params.post = lista.ob.srag.proaim$now.params.post)
   
+  ## 4.2. Cálculo do tempo de duplicação ####
+  td.now.ob.srag.proaim <- dt.rw(lista.ob.srag.proaim$now.pred.zoo$estimate.merged.c, window.width = 5)
+  ## Conveniencia: reordena e renomeia as colunas do objeto resultante
+  td.now.ob.srag.proaim <- td.now.ob.srag.proaim[, c(1, 3, 2)]
+  names(td.now.ob.srag.proaim) <- c("estimativa", "ic.inf", "ic.sup")
+  
+  ## 4.3. Corta a partir do dia com >= 10 casos ####
+  dia.zero.ob.srag.proaim <- time(lista.ob.srag.proaim$now.pred.zoo)[min(which(lista.ob.srag.proaim$now.pred.zoo$n.casos >= 10, arr.ind = TRUE))]
+  if (!is.na(dia.zero.ob.srag.proaim)) {
+    now.ob.srag.pred.zoo.proaim <- window(lista.ob.srag.proaim$now.pred.zoo, start = dia.zero.ob.srag.proaim)
+    now.ob.srag.proj.zoo.proaim  <- window(now.ob.srag.proj.zoo.proaim, start = dia.zero.ob.srag.proaim)
+    td.now.ob.srag.proaim <- window(td.now.ob.srag.proaim, start = dia.zero.ob.srag.proaim)
+  } else {
+    now.ob.srag.pred.zoo.proaim <- lista.ob.srag.proaim$now.pred.zoo
+  }
+  
+  ## 4.4. Gera df para grafico
+  df.ob.srag.proaim <- formata.now.df(now.ob.srag.pred.zoo.proaim, 
+                                      now.ob.srag.proj.zoo.proaim,
+                                      lista.ob.srag.proaim)
+  df.ob.srag.diario.proaim <- df.ob.srag.proaim$diario
+  df.ob.srag.cum.proaim <- df.ob.srag.proaim$acumulado
+  df.path <- paste0("../dados/", adm, "_", sigla.adm, "/tabelas_nowcasting_para_grafico/")
+  if (!dir.exists(df.path)) dir.create(df.path)
+  write.csv(df.ob.srag.cum.proaim, 
+            paste0(df.path, "nowcasting_acumulado_obitos_srag_proaim_", data.ob.srag.proaim, ".csv"), 
+            row.names = FALSE)
+  write.csv(df.ob.srag.diario.proaim, 
+            paste0(df.path, "nowcasting_diario_obitos_srag_proaim_", data.ob.srag.proaim, ".csv"), 
+            row.names = FALSE)
+  write.csv(zoo2df(td.now.ob.srag.proaim), 
+            paste0(df.path, "tempo_duplicacao_obitos_srag_proaim_", data.ob.srag.proaim, ".csv"), 
+            row.names = FALSE)
+}

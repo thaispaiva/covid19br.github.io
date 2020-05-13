@@ -54,7 +54,7 @@ formato.data <- opt$options$formatoData
 #if you are going to run this interactively uncomment: 
 #adm <- "municipio"
 #sigla.adm <- "SP"
-#data.base <- "2020-04-25"
+#data.base <- "2020-05-13"
 #formato.data <- "%Y-%m-%d"
 if (!exists('sigla.adm')) {
   print("Sigla do estado não definida")
@@ -122,7 +122,11 @@ plots.para.atualizar <- makeNamedList(
   # obitos srag
   plot.nowcast.ob.srag,
   plot.nowcast.cum.ob.srag,
-  plot.tempo.dupl.ob.srag
+  plot.tempo.dupl.ob.srag,
+  #obitos srag.proaim
+  plot.nowcast.ob.srag.proaim,
+  plot.nowcast.cum.ob.srag.proaim,
+  plot.tempo.dupl.ob.srag.proaim
 )
 
 # pegando apenas os plots que existem mesmo

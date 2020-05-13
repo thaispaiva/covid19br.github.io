@@ -14,6 +14,7 @@ prepara.dados <- function(tipo = "covid",
                           data.base = data.base) { # tipos possiveis: covid, srag, obitos_covid e obitos_srag
     casos <- c("covid", "srag")
     obitos <- c("obitos_covid", "obitos_srag")
+    proaim <- c("proaim_obitos_srag")
     if (adm == "municipio") {
         if (!sigla.adm %in% c("SP", "RJ")) {
             stop("sigla de municipio invalida")
@@ -33,7 +34,7 @@ prepara.dados <- function(tipo = "covid",
     if (tipo %in% casos) {
         nome.sint <- "n_casos_data_sintoma_"
     }
-    if (tipo %in% obitos) {
+    if (tipo %in% c(obitos, proaim)) {
         nome.sint <- "n_casos_data_"
     }
     n.notificados.zoo <- with(n.notificados, zoo(n.notific, as.Date(dt_notific)))
@@ -48,9 +49,11 @@ prepara.dados <- function(tipo = "covid",
     # adicionando condicao para 
     if (tipo %in% casos)
         n.sintoma.zoo <- with(n.sintoma, zoo(n.casos, as.Date(dt_sin_pri)))
-    if (tipo %in% obitos)
-        n.sintoma.zoo <- with(n.sintoma, zoo(n.casos, as.Date(dt_evoluca)))#ast aqui igual, dt_sin_pri é dt_evoluca no caso dos obitos
-    
+    # if (tipo %in% proaim)
+    #     n.sintoma$n.casos <- n.sintoma$n.notific
+    if (tipo %in% c(obitos, proaim))
+        n.sintoma.zoo <- with(n.sintoma, zoo(n.casos, as.Date(dt_evoluca)))#ast aqui igual, dt_sin_pri é dt_evoluca no caso
+        
     ## Junta todos os casos por data de sintoma com previsao do nowcasting (que só tem os ultimos 40 dias)
     ## VERIFICAR: Total de casos reportado por data do nowcasting tem diferenças com total de casos por data de sintoma tabulado
     now.pred.zoo <- merge(n.casos = n.sintoma.zoo, now.pred.zoo.original)

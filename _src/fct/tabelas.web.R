@@ -34,7 +34,7 @@ tabelas.web <- function(sigla.adm, # sigla da unidade administrativa
                 row.names = TRUE, col.names = FALSE)
     lista <- list(minmax.casos = minmax.casos, temp.dupl = temp.dupl, Re = Re.efe)
   } 
-  if (tipo %in% c("obitos_covid", "obitos_srag")) {
+  if (tipo %in% c("obitos_covid", "obitos_srag", "obitos_srag_proaim")) {
     lista <- list(minmax.casos = minmax.casos, temp.dupl = temp.dupl)
   }
   return(lista)

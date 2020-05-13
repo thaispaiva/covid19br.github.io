@@ -6,6 +6,10 @@ library(tidyr)
 # Parametros de formatacao comum aos plots
 source("funcoes.R") # plot.formatos vem junto aqui
 
+# teste local definindo vars
+# adm <- "municipio"
+# sigla.adm <- "SP"
+
 # dir para os ler os dados
 data.dir <- paste0("../dados/", adm, "_", sigla.adm, "/", "tabelas_nowcasting_para_grafico/")
 # dir para os outputs, separados em subpastas
@@ -170,3 +174,39 @@ if (existe.ob.srag) {
     plot.tempo.dupl.ob.srag <- NULL
 }
 
+#########################
+# OBITOS SRAG PROAIM ####
+#########################
+
+if (existe.ob.srag.proaim) {
+    data.ob.srag.proaim <- get.data.base2(adm, sigla.adm, "obitos_srag_proaim")
+    df.ob.srag.diario.proaim <- read.csv(paste0(data.dir, "nowcasting_diario_obitos_srag_proaim_", 
+                                                data.ob.srag.proaim, ".csv"))
+    df.ob.srag.cum.proaim <- read.csv(paste0(data.dir, "nowcasting_acumulado_obitos_srag_proaim_", 
+                                             data.ob.srag.proaim, ".csv"))
+    df.td.ob.srag.proaim <- read.csv(paste0(data.dir, "tempo_duplicacao_obitos_srag_proaim_", data.ob.srag.proaim, ".csv"))
+    ### diario
+    ## N de novos casos observados e por nowcasting
+    ## Com linha de média móvel
+    plot.nowcast.ob.srag.proaim <- plot.nowcast.diario(df.ob.srag.diario.proaim) +
+        xlab("Dia") +
+        ylab("Número de novos óbitos")
+    
+    ### acumulado
+    plot.nowcast.cum.ob.srag.proaim <- plot.nowcast.acumulado(df.ob.srag.cum.proaim) +
+        xlab("Dia") +
+        ylab("Número acumulado de óbitos")
+    
+    ### tempo de duplicação
+    plot.tempo.dupl.ob.srag.proaim <- plot.tempo.dupl(df.td.ob.srag.proaim)
+    # TABELAS ####
+    tabelas.web(sigla.adm, 
+                output.dir, 
+                tipo = "obitos_srag_proaim",
+                df.ob.srag.cum.proaim, 
+                df.td.ob.srag.proaim)  
+} else {
+    plot.nowcast.ob.srag.proaim <- NULL
+    plot.nowcast.cum.ob.srag.proaim <- NULL
+    plot.tempo.dupl.ob.srag.proaim <- NULL
+}
